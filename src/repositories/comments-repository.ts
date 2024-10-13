@@ -39,6 +39,29 @@ export const commentsRepository = {
         const result: DeleteResult = await CommentsModel.deleteOne({_id: new ObjectId(commentID)})
 
        return result.deletedCount === 1
+    },
+
+    async findUserLikeStatus(
+        commentId: string,
+        userId: string
+    ): Promise<string | null> {
+        const foundUser: CommentDBModel | null = await CommentsModel.findOne(
+            { _id: commentId },
+            {
+                "likesInfo.users": {
+                    $filter: {
+                        input: "$likesInfo.users",
+                        cond: { $eq: ["$$this.userId", userId] },
+                    },
+                },
+            }
+        );
+
+        if (!foundUser || foundUser.likesInfo.users.length === 0) {
+            return null;
+        }
+
+        return foundUser.likesInfo.users[0].likeStatus;
     }
 
 }

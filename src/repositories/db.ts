@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import * as mongoose from "mongoose";
 import {
     AttemptsSchema,
-    BlogsSchema, CommentsSchema,
+    BlogsSchema, CommentSchema,
     PostsSchema, RecoveryCodeSchema, TokensSchema, UsersSchema, UsersSessionSchema,
 } from "../utils/mongooseShema";
 dotenv.config()
@@ -16,7 +16,7 @@ export const client = new MongoClient(mongoURI);
 
 export const BlogModel = mongoose.model('blogs', BlogsSchema);
 export const PostsModel = mongoose.model('posts', PostsSchema)
-export const CommentsModel = mongoose.model('comments', CommentsSchema)
+export const CommentsModel = mongoose.model('comments', CommentSchema)
 export const UsersModel = mongoose.model('users', UsersSchema)
 export const TokensModel = mongoose.model('refresh-tokens-blacklist', TokensSchema)
 export const UsersSessionModel = mongoose.model('usersSession', UsersSessionSchema)

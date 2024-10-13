@@ -38,20 +38,20 @@ export const PostsSchema = new mongoose.Schema<PostDBModel>({
     },
 })
 
-export const CommentsSchema = new mongoose.Schema<CommentDBModel>({
-    postId:{type: String, required: true},
-    content:{type: String, required: true},
-    commentatorInfo:{
-        userId: {type: String, required: true},
-        userLogin: {type: String, required: true},
+export const CommentSchema = new mongoose.Schema<CommentDBModel>({
+    content: { type: String, required: true },
+    commentatorInfo: {
+        userId: { type: String, required: true },
+        userLogin: { type: String, required: true },
     },
-    createdAt:{type: String, required: true},
+    postId: { type: String, required: true },
+    createdAt: { type: String, required: true },
     likesInfo: {
-        likesCount: Number,
-        dislikesCount: Number,
-        myStatus: String
-    }
-})
+        likesCount: { type: Number, required: true },
+        dislikesCount: { type: Number, required: true },
+        users: [{ userId: String, likeStatus: String }],
+    },
+});
 
 export const UsersSchema = new mongoose.Schema<UserDBModel>({
     _id: ObjectId,

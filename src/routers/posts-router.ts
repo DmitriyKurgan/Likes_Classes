@@ -59,7 +59,7 @@ postsRouter.get('/:id/comments', async (req:Request, res:Response)=>{
     if (!postID || !postByID){
         return res.sendStatus(CodeResponsesEnum.Not_found_404)
     }
-    const commentsForParticularPost = await commentsQueryRepository.findAllCommentsByPostID(postID, queryValues)
+    const commentsForParticularPost = await commentsQueryRepository.findAllCommentsByPostID(postID, queryValues, req.userId!)
     if (!commentsForParticularPost || !commentsForParticularPost.items.length) {
         return res.status(CodeResponsesEnum.OK_200).send([]);
     }

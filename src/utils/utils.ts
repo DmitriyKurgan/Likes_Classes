@@ -1,4 +1,4 @@
-import {WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {BlogModel, CommentsModel, PostsModel, UsersModel} from "../repositories/db";
 import {CommentMapper} from "../repositories/query-repositories/comments-query-repository";
 import {UserDBModel} from "../models/database/UserDBModel";
@@ -91,7 +91,7 @@ export const getPostsFromDB = async (query:any, blogID?:string) => {
     }
 }
 
-export const getCommentsFromDB = async (query:any, postID?:string) => {
+export const getCommentsFromDB = async (query:any, userId:string, postID?:string) => {
     const byId = postID ? {  postId: postID } : {};
     const search = query.searchNameTerm
         ? { title: { $regex: query.searchNameTerm, $options: 'i' } }
@@ -110,12 +110,13 @@ export const getCommentsFromDB = async (query:any, postID?:string) => {
             .lean();
 
         const totalCount = await CommentsModel.countDocuments(filter);
+
         return {
             pagesCount: Math.ceil(totalCount / query.pageSize),
             page: query.pageNumber,
             pageSize: query.pageSize,
             totalCount,
-            items: items.map((comment:CommentDBModel) => CommentMapper(comment)),
+            items: items.map((comment:CommentDBModel) => CommentMapper(comment, userId)),
         };
     } catch (e) {
         console.log(e);
