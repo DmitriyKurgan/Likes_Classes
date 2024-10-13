@@ -9,6 +9,7 @@ import {authQueryRepository} from "../repositories/query-repositories/auth-query
 import {devicesService} from "../services/devices-service";
 import {attemptsRepository} from "../repositories/rate-limit-repository.ts";
 import {tokensQueryRepository} from "../repositories/query-repositories/tokens-query-repository";
+import {ObjectId} from "mongodb";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 const loginPattern =

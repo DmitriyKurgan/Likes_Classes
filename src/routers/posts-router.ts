@@ -46,7 +46,7 @@ postsRouter.get('/:id', async (req:Request, res:Response)=>{
     res.status(CodeResponsesEnum.OK_200).send(postByID);
 });
 
-postsRouter.get('/:id/comments', async (req:Request, res:Response)=>{
+postsRouter.get('/:id/comments', authMiddleware, validateErrorsMiddleware, async (req:Request, res:Response)=>{
     const queryValues = getQueryValues({
         pageNumber: req.query.pageNumber,
         pageSize: req.query.pageSize,
@@ -55,7 +55,7 @@ postsRouter.get('/:id/comments', async (req:Request, res:Response)=>{
     })
     const postID:string = req.params.id;
     const postByID:PostDBModel|null = await postsQueryRepository.findPostByID(postID);
-    console.log('postByID: ', postByID)
+    console.log('req.userId: ', req.userId)
     if (!postID || !postByID){
         return res.sendStatus(CodeResponsesEnum.Not_found_404)
     }

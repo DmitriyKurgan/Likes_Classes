@@ -12,7 +12,7 @@ export const CommentMapper = async (comment : CommentDBModel, userId?: string) :
     if (userId) {
         status = await commentsRepository.findUserLikeStatus(comment._id.toString(), userId);
     }
-
+    console.log('status', {status, comment,userId })
     return {
         id: comment._id.toString(),
         content: comment.content,
@@ -31,6 +31,7 @@ export const CommentMapper = async (comment : CommentDBModel, userId?: string) :
 
 export const commentsQueryRepository = {
     async findAllCommentsByPostID(postID: string, query:any, userId: string):Promise<any | { error: string }> {
+        console.log('findAllCommentsByPostID_userId: ', userId)
         return getCommentsFromDB(query, userId, postID)
     },
     async findCommentByID(commentID:string){
