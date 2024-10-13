@@ -24,7 +24,7 @@ export const CommentMapper = async (comment : CommentDBModel, userId?: string) :
         likesInfo: {
             likesCount: comment.likesInfo.likesCount,
             dislikesCount: comment.likesInfo.dislikesCount,
-            myStatus: status || "None",
+            myStatus: "None",
         },
     }
 }

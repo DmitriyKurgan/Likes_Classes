@@ -95,7 +95,7 @@ postsRouter.post('/:id/comments',
         return res.sendStatus(CodeResponsesEnum.Not_found_404);
     }
     const user = await usersRepository.findUserByID(req.userId!)
-    const newComment: CommentViewModel | null = await commentsService.createComment(req.body, post._id.toString(), req.userId!, user!.accountData.userName);
+    const newComment: CommentViewModel | null = await commentsService.createComment(req.body, post._id.toString(), req.userId!, user.accountData.userName);
     if (!newComment) {
         return
     }
