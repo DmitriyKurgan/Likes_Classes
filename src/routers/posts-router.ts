@@ -55,6 +55,7 @@ postsRouter.get('/:id/comments', async (req:Request, res:Response)=>{
     })
     const postID:string = req.params.id;
     const postByID:PostDBModel|null = await postsQueryRepository.findPostByID(postID);
+    console.log('postByID: ', postByID)
     if (!postID || !postByID){
         return res.sendStatus(CodeResponsesEnum.Not_found_404)
     }

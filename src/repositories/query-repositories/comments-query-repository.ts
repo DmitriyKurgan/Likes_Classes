@@ -16,7 +16,7 @@ export const CommentMapper = (comment : CommentDBModel) : CommentViewModel => {
         likesInfo: {
             likesCount: comment.likesInfo.likesCount,
             dislikesCount: comment.likesInfo.dislikesCount,
-            myStatus: status || "None",
+            myStatus: "None",
         },
     }
 }

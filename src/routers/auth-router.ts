@@ -73,7 +73,6 @@ authRouter.post('/registration',
         const dbUser: UserViewModel | null = await usersService.createUser(req.body.login, req.body.email, req.body.password);
         console.log('dbUser: ', dbUser)
         const userAccount = await usersRepository.findByLoginOrEmail(req.body.email);
-        console.log('userAccount: ', userAccount)
         if (!userAccount) {
             return res.sendStatus(CodeResponsesEnum.Not_found_404)
         }
