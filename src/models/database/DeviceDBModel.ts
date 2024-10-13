@@ -7,7 +7,7 @@ export class DeviceDBModel {
     public title: string,
     public userId: string,
     public deviceId: string,
-    public lastActiveDate: number,
-    public expirationDate: number
+    public lastActiveDate: string,
+   // public expirationDate: number
   ) {}
 }

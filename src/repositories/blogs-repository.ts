@@ -1,10 +1,8 @@
 import {BlogModel} from "../repositories/db";
 import {ObjectId, UpdateResult} from "mongodb";
-import {BLogType} from "../utils/types";
 import {BlogViewModel} from "../models/view/BlogViewModel";
 import {BlogDBModel} from "../models/database/BlogDBModel";
-export const blogs = [] as BLogType[]
-
+export const blogs = [] as BlogDBModel[]
 
 export const blogsRepository = {
     async createBlog(newBlog:BlogDBModel):Promise<BlogViewModel | null> {
@@ -18,8 +16,8 @@ export const blogsRepository = {
             isMembership: newBlog.isMembership
         }
     },
-    async updateBlog(blogID:string, body:BLogType):Promise<boolean> {
-        const result: UpdateResult<BLogType>= await BlogModel.updateOne({_id: new ObjectId(blogID)},
+    async updateBlog(blogID:string, body: BlogDBModel):Promise<boolean> {
+        const result: UpdateResult<BlogDBModel>= await BlogModel.updateOne({_id: new ObjectId(blogID)},
             {$set:{name: body.name,
             description: body.description,
             websiteUrl: body.websiteUrl

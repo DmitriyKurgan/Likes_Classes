@@ -1,9 +1,10 @@
 import {WithId} from "mongodb";
-import {DeviceType} from "../../utils/types";
 import {UsersSessionModel} from "../db";
+import {DeviceDBModel} from "../../models/database/DeviceDBModel";
+import {DeviceViewModel} from "../../models/view/DeviceViewModel";
 
-export const DevicesMapping = (devices: WithId<DeviceType>[]) => {
-    return devices.map((device: WithId<DeviceType>) => {
+export const DevicesMapping = (devices: DeviceDBModel[]) => {
+    return devices.map((device: DeviceDBModel): DeviceViewModel => {
         return {
             ip: device.ip,
             title: device.title,
@@ -14,7 +15,7 @@ export const DevicesMapping = (devices: WithId<DeviceType>[]) => {
 
 export const devicesQueryRepository = {
     async getAllDevices(userId:string):Promise<any | { error: string }> {
-        const devices: WithId<DeviceType>[] = await UsersSessionModel.find({userId}).lean();
+        const devices: DeviceDBModel[] = await UsersSessionModel.find({userId}).lean();
         return DevicesMapping(devices)
     },
 }

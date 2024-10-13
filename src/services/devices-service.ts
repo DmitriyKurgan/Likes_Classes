@@ -1,18 +1,20 @@
-import { DeviceType, OutputCommentType} from "../utils/types";
-
 import {devicesRepository} from "../repositories/devices-repository";
+import {DeviceViewModel} from "../models/view/DeviceViewModel";
+import {DeviceDBModel} from "../models/database/DeviceDBModel";
+import {ObjectId} from "mongodb";
 
-export const comments = [] as OutputCommentType[]
-export type ExtendedSessionType = DeviceType & {userId:string}
+export const devices = [] as DeviceViewModel[]
 export const devicesService: any = {
     async createDevice(userId: string, ip:string, title:string, lastActiveDate:string, deviceId:string ): Promise<any> {
-        const newSession: ExtendedSessionType = {
-            userId,
+
+        const newSession = new DeviceDBModel(
+            new ObjectId(),
             ip,
+            title,
+            userId,
             deviceId,
             lastActiveDate,
-            title,
-        };
+        )
 
         return devicesRepository.createDevice(newSession);
     },
@@ -26,7 +28,7 @@ export const devicesService: any = {
     async deleteDevice(deviceID: string): Promise<boolean> {
         return await devicesRepository.deleteDevice(deviceID);
     },
-    async deleteAllOldDevices(currentDeviceId:string):Promise<any | { error: string }> {
+    async deleteAllOldDevices(currentDeviceId:string):Promise<Object | { error: string }> {
       return devicesRepository.deleteAllOldDevices(currentDeviceId);
     },
     async findDeviceById(currentDeviceId:string):Promise<any | { error: string }> {

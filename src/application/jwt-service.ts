@@ -1,17 +1,18 @@
-import {AccessToken, TokenType, UserType} from "../utils/types";
+import {AccessToken, TokenType} from "../utils/types";
 import {ObjectId} from "mongodb";
 import jwt from 'jsonwebtoken';
 import {settings} from "../settings";
+import {UserDBModel} from "../models/database/UserDBModel";
 
 export const jwtService:any = {
 
-    async createJWT(user:UserType & {id:string}, deviceId: string):Promise<TokenType>{
+    async createJWT(user: UserDBModel & {id:string}, deviceId: string):Promise<TokenType>{
 
         const accessToken: AccessToken = {
-            accessToken: jwt.sign({ userId: user.id, deviceId }, settings.JWT_SECRET, { expiresIn: '10s' })
+            accessToken: jwt.sign({ userId: user.id, deviceId }, settings.JWT_SECRET, { expiresIn: '10m' })
         };
 
-        const refreshToken = jwt.sign({ userId: user.id, deviceId }, settings.JWT_SECRET, { expiresIn: '20s' })
+        const refreshToken = jwt.sign({ userId: user.id, deviceId }, settings.JWT_SECRET, { expiresIn: '20m' })
 
         return { accessToken, refreshToken };
     },
@@ -32,9 +33,7 @@ export const jwtService:any = {
         }
     },
     getLastActiveDateFromToken(refreshToken: string): string {
-        console.log('refreshToken: ', refreshToken)
         const payload: any = jwt.verify(refreshToken, settings.JWT_SECRET)
-        console.log('payload: ', payload)
         return new Date(payload.iat * 1000).toISOString()
     },
     getDeviceIdFromToken(refreshToken: string): string {

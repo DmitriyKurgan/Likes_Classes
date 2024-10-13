@@ -1,9 +1,8 @@
-import {ObjectId, WithId, UpdateResult, DeleteResult} from "mongodb";
-import {OutputPostModel, PostType} from "../utils/types";
+import {ObjectId, UpdateResult, DeleteResult} from "mongodb";
 import {PostsModel} from "./db";
-import {ExtendedUserLikes, PostDBModel} from "../models/database/PostDBModel";
+import {PostDBModel} from "../models/database/PostDBModel";
 import {PostViewModel} from "../models/view/PostViewModel";
-export const posts = [] as PostType[]
+export const posts = [] as PostViewModel[]
 
 export const postsRepository = {
    async createPost(newPost:PostDBModel):Promise<PostViewModel | null> {
@@ -25,8 +24,8 @@ export const postsRepository = {
            }
        }
     },
-   async updatePost(postID:string, body:PostType): Promise<boolean> {
-        const result: UpdateResult<PostType> = await PostsModel.updateOne({_id: new ObjectId(postID)},
+   async updatePost(postID:string, body: PostDBModel): Promise<boolean> {
+        const result: UpdateResult<PostDBModel> = await PostsModel.updateOne({_id: new ObjectId(postID)},
             {$set: {
                     title: body.title,
                     shortDescription: body.shortDescription,

@@ -1,7 +1,6 @@
 import {RecoveryCodeModel, UsersModel} from "./db";
 import {ObjectId, DeleteResult} from "mongodb";
-import {EazeUserType, UserDBType} from "../utils/types";
-import {UserMapper, UserSimpleMapper, usersQueryRepository} from "./query-repositories/users-query-repository";
+import {UserMapper,} from "./query-repositories/users-query-repository";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {UserViewModel} from "../models/view/UserViewModel";
 

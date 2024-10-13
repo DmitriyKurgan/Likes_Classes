@@ -1,13 +1,12 @@
 import {UsersSessionModel} from "./db";
-import {DeleteResult, WithId} from "mongodb";
-import {DeviceType, } from "../utils/types";
-import {ExtendedSessionType} from "../services/devices-service";
+import {DeleteResult} from "mongodb";
+import {DeviceViewModel} from "../models/view/DeviceViewModel";
 
-export const devices = [] as DeviceType[]
+export const devices = [] as DeviceViewModel[]
 
 export const devicesRepository = {
 
-    async createDevice(session:ExtendedSessionType){
+    async createDevice(session:DeviceViewModel){
         return UsersSessionModel.create(session);
     },
 
@@ -35,7 +34,7 @@ export const devicesRepository = {
         return UsersSessionModel.deleteMany({deviceId: {$ne: currentDeviceID}});
     },
     async findDeviceById(deviceID:string){
-        const result: WithId<DeviceType> | null = await UsersSessionModel.findOne({deviceId:deviceID});
+        const result: DeviceViewModel | null = await UsersSessionModel.findOne({deviceId:deviceID});
         return result
     }
 }

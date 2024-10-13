@@ -1,4 +1,4 @@
-import {BlogsServiceType, BLogType} from "../utils/types";
+import {BlogsServiceType} from "../utils/types";
 import {blogsRepository} from "../repositories/blogs-repository";
 import {BlogDBModel} from "../models/database/BlogDBModel";
 import {ObjectId} from "mongodb";

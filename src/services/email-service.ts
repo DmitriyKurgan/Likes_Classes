@@ -1,7 +1,8 @@
-import {OutputUserType, RecoveryCodeType} from "../utils/types";
+import {RecoveryCodeType} from "../utils/types";
 import {emailManager} from "../managers/email-manager";
+import {UserViewModel} from "../models/view/UserViewModel";
 
-export const users = [] as OutputUserType[]
+export const users = [] as UserViewModel[]
 
 export const emailService:any = {
     async sendEmail(email:string, confirmationCode:string):Promise<void> {

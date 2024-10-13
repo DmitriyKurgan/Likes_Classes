@@ -1,17 +1,31 @@
-import {ObjectId, WithId, UpdateResult, DeleteResult} from "mongodb";
-import {CommentType, OutputCommentType, PostType} from "../utils/types";
-import {CommentMapper} from "./query-repositories/comments-query-repository";
+import {ObjectId, UpdateResult, DeleteResult} from "mongodb";
 import {CommentsModel} from "./db";
-export const comments = [] as PostType[]
+import {CommentViewModel} from "../models/view/CommentViewModel";
+import {CommentDBModel} from "../models/database/CommentDBModel";
+export const comments = [] as CommentViewModel[]
 
 export const commentsRepository = {
-   async createComment(newComment:CommentType):Promise<OutputCommentType | null> {
+   async createComment(newComment:CommentDBModel):Promise<CommentViewModel | null> {
        const _id = await CommentsModel.create(newComment)
-       const comment:WithId<CommentType> | null = await CommentsModel.findOne({_id})
-       return comment ? CommentMapper(comment) : null
+
+       return {
+           id: _id.toString(),
+           content: newComment.content,
+           commentatorInfo: {
+               userId: newComment.commentatorInfo.userId,
+               userLogin: newComment.commentatorInfo.userLogin,
+           },
+           createdAt: newComment.createdAt,
+           likesInfo: {
+               likesCount: newComment.likesInfo.likesCount,
+               dislikesCount: newComment.likesInfo.dislikesCount,
+               myStatus: "None",
+           },
+       }
     },
-   async updateComment(commentID:string, body:CommentType): Promise<boolean> {
-        const result: UpdateResult<CommentType> = await CommentsModel
+
+   async updateComment(commentID:string, body:CommentDBModel): Promise<boolean> {
+        const result: UpdateResult<CommentDBModel> = await CommentsModel
             .updateOne({_id: new ObjectId(commentID)},
             {$set: {
                     ...body,

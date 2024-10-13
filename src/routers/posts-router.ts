@@ -7,7 +7,6 @@ import {
 } from "../middlewares/middlewares";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
 import {posts, postsService} from "../services/posts-service";
-import {OutputBlogType, OutputCommentType} from "../utils/types";
 import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {blogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
 import {commentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
@@ -15,6 +14,11 @@ import {comments, commentsService} from "../services/comments-service";
 import {usersRepository} from "../repositories/users-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
 import {PostDBModel} from "../models/database/PostDBModel";
+import {CommentViewModel} from "../models/view/CommentViewModel";
+import {UserViewModel} from "../models/view/UserViewModel";
+import {UserDBModel} from "../models/database/UserDBModel";
+import {BlogDBModel} from "../models/database/BlogDBModel";
+import {BlogViewModel} from "../models/view/BlogViewModel";
 
 export const postsRouter = Router({});
 
@@ -68,7 +72,7 @@ postsRouter.post('/',
     validationPostsCreation,
     validateErrorsMiddleware,
     async (req:Request, res:Response)=>{
-    const blog: OutputBlogType | null = await blogsQueryRepository.findBlogByID(req.body.blogId)
+    const blog: BlogViewModel | null = await blogsQueryRepository.findBlogByID(req.body.blogId)
     if (!blog){
         return res.sendStatus(CodeResponsesEnum.Not_found_404);
     }
@@ -90,7 +94,7 @@ postsRouter.post('/:id/comments',
         return res.sendStatus(CodeResponsesEnum.Not_found_404);
     }
     const user = await usersRepository.findUserByID(req.userId!)
-    const newComment: OutputCommentType| null = await commentsService.createComment(req.body, post._id.toString(), req.userId, user!.accountData.userName);
+    const newComment: CommentViewModel | null = await commentsService.createComment(req.body, post._id.toString(), req.userId!, user!.accountData.userName);
     if (!newComment) {
         return
     }

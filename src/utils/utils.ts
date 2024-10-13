@@ -1,10 +1,10 @@
-import {CommentType} from "./types";
 import {WithId} from "mongodb";
 import {BlogModel, CommentsModel, PostsModel, UsersModel} from "../repositories/db";
 import {CommentMapper} from "../repositories/query-repositories/comments-query-repository";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {PostDBModel} from "../models/database/PostDBModel";
 import {BlogDBModel} from "../models/database/BlogDBModel";
+import {CommentDBModel} from "../models/database/CommentDBModel";
 
 export enum CodeResponsesEnum {
     Incorrect_values_400 = 400,
@@ -56,7 +56,7 @@ export const getPostsFromDB = async (query:any, blogID?:string) => {
     };
 
     try {
-        const items: any = await PostsModel
+        const items: PostDBModel[] = await PostsModel
             .find(filter)
             .sort({ [query.sortBy]: query.sortDirection === 'asc' ? 1 : -1 })
             .skip((query.pageNumber - 1) * query.pageSize)
@@ -69,7 +69,7 @@ export const getPostsFromDB = async (query:any, blogID?:string) => {
             page: query.pageNumber,
             pageSize: query.pageSize,
             totalCount,
-            items: items.map((post:WithId<PostDBModel>) => ({
+            items: items.map((post:PostDBModel) => ({
                     id: post._id.toString(),
                     title: post.title,
                     shortDescription: post.shortDescription,
@@ -102,7 +102,7 @@ export const getCommentsFromDB = async (query:any, postID?:string) => {
     };
 
     try {
-        const items: WithId<CommentType>[] = await CommentsModel
+        const items: CommentDBModel[] = await CommentsModel
             .find(filter)
             .sort({ [query.sortBy]: query.sortDirection === 'asc' ? 1 : -1 })
             .skip((query.pageNumber - 1) * query.pageSize)
@@ -115,7 +115,7 @@ export const getCommentsFromDB = async (query:any, postID?:string) => {
             page: query.pageNumber,
             pageSize: query.pageSize,
             totalCount,
-            items: items.map((comment:WithId<CommentType>) => CommentMapper(comment)),
+            items: items.map((comment:CommentDBModel) => CommentMapper(comment)),
         };
     } catch (e) {
         console.log(e);
@@ -146,7 +146,7 @@ export const getBlogsFromDB = async (query:any) => {
             page: query.pageNumber,
             pageSize: query.pageSize,
             totalCount,
-            items: items.map((blog: WithId<BlogDBModel>) => ({
+            items: items.map((blog: BlogDBModel) => ({
                 id: blog._id.toString(),
                     name: blog.name,
                     description: blog.description,
@@ -174,7 +174,7 @@ export const getUsersFromDB = async (query:any) => {
     };
 
     try {
-        const items: any = await UsersModel
+        const items: UserDBModel[] = await UsersModel
             .find(filter)
             .sort({ [query.sortBy]: query.sortDirection === 'asc' ? 1 : -1 })
             .skip((query.pageNumber - 1) * query.pageSize)
@@ -187,7 +187,7 @@ export const getUsersFromDB = async (query:any) => {
             page: query.pageNumber,
             pageSize: query.pageSize,
             totalCount,
-            items: items.map((user:WithId<UserDBModel>) => ({
+            items: items.map((user:UserDBModel) => ({
                 id: user._id.toString(),
                     login: user.accountData.userName,
                     email: user.accountData.email,

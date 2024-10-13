@@ -1,7 +1,6 @@
 import {Request, Response, Router} from "express";
 import {blogs, blogsService} from "../services/blogs-service";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
-import {OutputBlogType} from "../utils/types";
 import {
     validateAuthorization,
     validateBlogsRequests,
@@ -11,9 +10,9 @@ import {
 import {posts, postsService} from "../services/posts-service";
 import {blogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
 import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
-import {PostDBModel} from "../models/database/PostDBModel";
 import {PostViewModel} from "../models/view/PostViewModel";
 import {BlogViewModel} from "../models/view/BlogViewModel";
+import {BlogDBModel} from "../models/database/BlogDBModel";
 
 export const blogsRouter = Router({});
 
@@ -34,7 +33,7 @@ blogsRouter.get('/', async (req:Request, res:Response)=>{
 
 blogsRouter.get('/:id', validationBlogsFindByParamId, async (req:Request, res:Response)=>{
     const blogID = req.params.id;
-    const blogByID:OutputBlogType|null = await blogsQueryRepository.findBlogByID(blogID);
+    const blogByID: BlogViewModel | null = await blogsQueryRepository.findBlogByID(blogID);
     if (!blogID || !blogByID){
         return res.sendStatus(CodeResponsesEnum.Not_found_404);
     }
@@ -43,7 +42,7 @@ blogsRouter.get('/:id', validationBlogsFindByParamId, async (req:Request, res:Re
 
 blogsRouter.get('/:id/posts', async (req:Request, res:Response)=>{
      const blogID = req.params.id;
-     const blogByID:OutputBlogType|null = await blogsQueryRepository.findBlogByID(blogID);
+     const blogByID: BlogViewModel|null = await blogsQueryRepository.findBlogByID(blogID);
      if(!blogID || !blogByID){
         return res.sendStatus(CodeResponsesEnum.Not_found_404);
      }
@@ -75,7 +74,7 @@ blogsRouter.post('/', validateAuthorization, validateBlogsRequests, validateErro
 
 blogsRouter.post('/:id/posts', validateAuthorization, validatePostsRequests,validateErrorsMiddleware, async (req:Request, res:Response)=>{
     const blogID = req.params.id;
-    const blogByID:OutputBlogType|null = await blogsQueryRepository.findBlogByID(blogID);
+    const blogByID: BlogViewModel | null = await blogsQueryRepository.findBlogByID(blogID);
     if(!blogID || !blogByID){
         res.sendStatus(CodeResponsesEnum.Not_found_404);
         return

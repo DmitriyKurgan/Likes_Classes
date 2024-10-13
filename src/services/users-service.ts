@@ -1,4 +1,3 @@
-import {EazeUserType, OutputUserType, UserDBType} from "../utils/types";
 import {usersRepository} from "../repositories/users-repository";
 import bcrypt from 'bcrypt'
 import {ObjectId} from "mongodb";
@@ -7,7 +6,7 @@ import {add} from "date-fns/add";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {UserViewModel} from "../models/view/UserViewModel";
 
-export const users = [] as EazeUserType[]
+export const users = [] as UserViewModel[]
 
 export const usersService:any = {
 
@@ -40,8 +39,8 @@ export const usersService:any = {
    async deleteUser(userID:string): Promise<boolean>{
        return await usersRepository.deleteUser(userID);
     },
-    async checkCredentials(loginOrEmail:string, password:string):Promise<OutputUserType | null> {
-        const user:OutputUserType | null = await usersRepository.findByLoginOrEmail(loginOrEmail);
+    async checkCredentials(loginOrEmail:string, password:string):Promise<UserDBModel | null> {
+        const user: UserDBModel | null = await usersRepository.findByLoginOrEmail(loginOrEmail);
         if (!user){
             return null
         }

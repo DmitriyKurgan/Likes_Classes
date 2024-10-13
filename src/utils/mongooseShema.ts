@@ -1,17 +1,11 @@
 import * as mongoose from "mongoose";
 import {ObjectId} from "mongodb";
-import {
-    CommentType,
-    DeviceType, MongoRefreshTokenType,
-    OutputBlogType,
-    RateLimitType, RecoveryCodeType,
-    UserDBType
-} from "./types";
-import {PostViewModel} from "../models/view/PostViewModel";
-import {BlogDBModel} from "../models/database/BlogDBModel";
+import {MongoRefreshTokenType, RateLimitType, RecoveryCodeType} from "./types";
 import {BlogViewModel} from "../models/view/BlogViewModel";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {PostDBModel} from "../models/database/PostDBModel";
+import {CommentDBModel} from "../models/database/CommentDBModel";
+import {DeviceDBModel} from "../models/database/DeviceDBModel";
 
 
 export const BlogsSchema = new mongoose.Schema<BlogViewModel>({
@@ -44,7 +38,7 @@ export const PostsSchema = new mongoose.Schema<PostDBModel>({
     },
 })
 
-export const CommentsSchema = new mongoose.Schema<CommentType>({
+export const CommentsSchema = new mongoose.Schema<CommentDBModel>({
     postId:{type: String, required: true},
     content:{type: String, required: true},
     commentatorInfo:{
@@ -52,11 +46,11 @@ export const CommentsSchema = new mongoose.Schema<CommentType>({
         userLogin: {type: String, required: true},
     },
     createdAt:{type: String, required: true},
-    // likesInfo: {
-    //     likesCount: Number,
-    //     dislikesCount: Number,
-    //     myStatus: String
-    // }
+    likesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String
+    }
 })
 
 export const UsersSchema = new mongoose.Schema<UserDBModel>({
@@ -79,7 +73,7 @@ export const TokensSchema = new mongoose.Schema<MongoRefreshTokenType>({
     refreshToken: {type: String, required: true}
 })
 
-export const UsersSessionSchema = new mongoose.Schema<DeviceType>({
+export const UsersSessionSchema = new mongoose.Schema<DeviceDBModel>({
     ip: String,
     title: String,
     lastActiveDate: String,
