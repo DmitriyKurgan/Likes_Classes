@@ -22,6 +22,7 @@ import {tokensService} from "../services/tokens-service";
 import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
 import {devicesService} from "../services/devices-service";
 import {randomUUID, UUID} from "crypto";
+import {UserViewModel} from "../models/view/UserViewModel";
 
 export const authRouter = Router({});
 
@@ -69,8 +70,10 @@ authRouter.post('/registration',
     requestAttemptsMiddleware,
     validateErrorsMiddleware,
     async (req: Request, res: Response) => {
-        await usersService.createUser(req.body.login, req.body.email, req.body.password);
+        const dbUser: UserViewModel | null = await usersService.createUser(req.body.login, req.body.email, req.body.password);
+        console.log('dbUser: ', dbUser)
         const userAccount = await usersRepository.findByLoginOrEmail(req.body.email);
+        console.log('userAccount: ', userAccount)
         if (!userAccount) {
             return res.sendStatus(CodeResponsesEnum.Not_found_404)
         }
