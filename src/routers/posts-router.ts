@@ -15,9 +15,6 @@ import {usersRepository} from "../repositories/users-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
 import {PostDBModel} from "../models/database/PostDBModel";
 import {CommentViewModel} from "../models/view/CommentViewModel";
-import {UserViewModel} from "../models/view/UserViewModel";
-import {UserDBModel} from "../models/database/UserDBModel";
-import {BlogDBModel} from "../models/database/BlogDBModel";
 import {BlogViewModel} from "../models/view/BlogViewModel";
 
 export const postsRouter = Router({});
