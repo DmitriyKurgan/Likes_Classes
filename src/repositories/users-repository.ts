@@ -16,9 +16,9 @@ export const usersRepository = {
 
 
     async createUser(newUser:UserDBModel):Promise<UserViewModel | null> {
-        const _id = await UsersModel.create(newUser);
+        const user = await UsersModel.create(newUser);
          return {
-             id: _id.toString(),
+             id: user._id.toString(),
              email:newUser.accountData.email,
              login:newUser.accountData.userName,
              createdAt:newUser.accountData.createdAt,

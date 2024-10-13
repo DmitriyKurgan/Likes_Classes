@@ -6,10 +6,10 @@ export const posts = [] as PostViewModel[]
 
 export const postsRepository = {
    async createPost(newPost:PostDBModel):Promise<PostViewModel | null> {
-       const _id = await PostsModel.create(newPost)
+       const post = await PostsModel.create(newPost)
 
        return {
-           id: _id.toString(),
+           id: post._id.toString(),
            title: newPost.title,
            shortDescription: newPost.shortDescription,
            content: newPost.content,

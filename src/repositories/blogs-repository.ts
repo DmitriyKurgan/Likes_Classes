@@ -6,9 +6,9 @@ export const blogs = [] as BlogDBModel[]
 
 export const blogsRepository = {
     async createBlog(newBlog:BlogDBModel):Promise<BlogViewModel | null> {
-        const _id = await BlogModel.create(newBlog);
+        const blog = await BlogModel.create(newBlog);
         return {
-            id: _id.toString(),
+            id: blog._id.toString(),
             name: newBlog.name,
             description: newBlog.description,
             websiteUrl: newBlog.websiteUrl,

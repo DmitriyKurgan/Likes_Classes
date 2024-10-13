@@ -6,10 +6,10 @@ export const comments = [] as CommentViewModel[]
 
 export const commentsRepository = {
    async createComment(newComment:CommentDBModel):Promise<CommentViewModel | null> {
-       const _id = await CommentsModel.create(newComment)
+       const comment = await CommentsModel.create(newComment)
 
        return {
-           id: _id.toString(),
+           id: comment._id.toString(),
            content: newComment.content,
            commentatorInfo: {
                userId: newComment.commentatorInfo.userId,
