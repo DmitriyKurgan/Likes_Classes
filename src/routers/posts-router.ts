@@ -83,7 +83,7 @@ postsRouter.post('/',
 });
 
 postsRouter.post('/:id/comments',
-    // authMiddleware,
+    authMiddleware,
     validateCommentsRequests,
     validateErrorsMiddleware,
     async (req:Request, res:Response)=>{
