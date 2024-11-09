@@ -84,7 +84,7 @@ postsRouter.post('/',
 
 postsRouter.post('/:id/comments',
     authMiddleware,
-    validateCommentsRequests,
+    validateCommentsRequests as any,
     validateErrorsMiddleware,
     async (req:Request, res:Response)=>{
 
