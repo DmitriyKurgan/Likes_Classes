@@ -312,15 +312,19 @@ export const validateAuthorization = (req: Request, res: Response, next: NextFun
 };
 
 export const authMiddleware = async (req:Request, res:Response, next:NextFunction)=>{
-    if (!req.cookies.refreshToken){
+    console.log('req: ', req.headers)
+    if (!req.headers.authorization){
        return res.sendStatus(CodeResponsesEnum.Unauthorized_401);
     }
-    const token = req.cookies.refreshToken;
 
-    const userId = await jwtService.getUserIdByToken(token);
+    const accessToken = req.headers.authorization.split(' ')[1];
+
+    const userId = await jwtService.getUserIdByToken(accessToken);
+
     if (!userId){
       return  res.sendStatus(CodeResponsesEnum.Unauthorized_401);
     }
+
     req.userId = userId;
     next();
 }
