@@ -31,7 +31,6 @@ export const CommentMapper = async (comment : CommentDBModel, userId?: string) :
 
 export const commentsQueryRepository = {
     async findAllCommentsByPostID(postID: string, query:any, userId: string):Promise<any | { error: string }> {
-        console.log('findAllCommentsByPostID_userId: ', userId)
         return getCommentsFromDB(query, userId, postID)
     },
     async findCommentByID(commentID:string){

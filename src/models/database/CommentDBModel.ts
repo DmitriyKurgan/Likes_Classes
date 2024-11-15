@@ -17,6 +17,7 @@ export class CommentDBModel {
     public likesInfo: {
       likesCount: number;
       dislikesCount: number;
+      myStatus: string;
       users: UserLikes[];
     }
   ) {}

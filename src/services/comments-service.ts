@@ -1,7 +1,8 @@
 import {commentsRepository} from "../repositories/comments-repository";
-import {CommentDBModel, UserLikes} from "../models/database/CommentDBModel";
-import {ObjectId} from "mongodb";
+import {CommentDBModel} from "../models/database/CommentDBModel";
+import {ObjectId, UpdateResult} from "mongodb";
 import {CommentViewModel} from "../models/view/CommentViewModel";
+import {commentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
 
 export const comments = [] as CommentViewModel[]
 
@@ -19,6 +20,7 @@ export const commentsService: any = {
             {
                 likesCount: 0,
                 dislikesCount: 0,
+                myStatus: "None",
                 users: []
             }
         )
@@ -31,6 +33,11 @@ export const commentsService: any = {
     },
     async updateComment(commentID: string, body: CommentDBModel): Promise<boolean> {
         return await commentsRepository.updateComment(commentID, body);
+    },
+    async updateLikeStatus(commentID: string, userId: string, likeStatus: string): Promise<UpdateResult | any> {
+        const comment = await commentsQueryRepository.findCommentByID(commentID);
+        if (!comment) return null
+        return commentsRepository.updateLikeStatus(commentID, userId, likeStatus);
     },
 
 }

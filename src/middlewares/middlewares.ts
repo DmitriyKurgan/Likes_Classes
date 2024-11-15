@@ -9,7 +9,7 @@ import {authQueryRepository} from "../repositories/query-repositories/auth-query
 import {devicesService} from "../services/devices-service";
 import {attemptsRepository} from "../repositories/rate-limit-repository.ts";
 import {tokensQueryRepository} from "../repositories/query-repositories/tokens-query-repository";
-import {ObjectId} from "mongodb";
+import {LikeStatusEnum} from "../utils/types";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 const loginPattern =
@@ -214,6 +214,25 @@ export const validateCommentsRequests = [
         ),
    ];
 
+export const validateCommentsLikesRequests = [
+    body("likeStatus")
+        .exists()
+        .withMessage("Like Status is required")
+        .isString()
+        .withMessage("Type of Like Status must be a string")
+        .trim()
+        .withMessage("Like Status must be in correct format")
+        .isLength({
+            min: 0,
+            max: 300,
+        })
+        .withMessage(
+            "Like Status length must be more than 0 and less than or equal to 300 symbols"
+        )
+        .isIn(Object.values(LikeStatusEnum))
+        .withMessage("Like Status must be one of the allowed values: Like, Dislike, or None"),
+];
+
 export const validateDevicesRequests = [
     body('ip')
         .isString().withMessage('IP address must be a string')
@@ -312,7 +331,6 @@ export const validateAuthorization = (req: Request, res: Response, next: NextFun
 };
 
 export const authMiddleware = async (req:Request, res:Response, next:NextFunction)=>{
-    console.log('req: ', req.headers)
     if (!req.headers.authorization){
        return res.sendStatus(CodeResponsesEnum.Unauthorized_401);
     }

@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 import {ObjectId} from "mongodb";
-import {MongoRefreshTokenType, RateLimitType, RecoveryCodeType} from "./types";
+import {LikeStatusEnum, LikeStatusType, MongoRefreshTokenType, RateLimitType, RecoveryCodeType} from "./types";
 import {BlogViewModel} from "../models/view/BlogViewModel";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {PostDBModel} from "../models/database/PostDBModel";
@@ -49,6 +49,7 @@ export const CommentSchema = new mongoose.Schema<CommentDBModel>({
     likesInfo: {
         likesCount: { type: Number, required: true },
         dislikesCount: { type: Number, required: true },
+        myStatus: { type: String, required: true },
         users: [{ userId: String, likeStatus: String }],
     },
 });
@@ -92,10 +93,10 @@ export const RecoveryCodeSchema = new mongoose.Schema<RecoveryCodeType>({
     recoveryCode: String
 })
 
-// export const LikeStatusSchema = new mongoose.Schema<LikeStatusType>({
-//     parentId: String,
-//     userId: String,
-//     login: String,
-//     addedAt: Date,
-//     likeStatus: {type: String, enum: LikeStatusEnum}
-// })
+export const LikeStatusSchema = new mongoose.Schema<LikeStatusType>({
+    parentId: String,
+    userId: String,
+    //login: String,
+    addedAt: Date,
+    likeStatus: {type: String, enum: LikeStatusEnum}
+})

@@ -87,7 +87,7 @@ postsRouter.post('/:id/comments',
     validateCommentsRequests as any,
     validateErrorsMiddleware,
     async (req:Request, res:Response)=>{
-
+        console.log('123')
     const post: PostDBModel | null = await postsQueryRepository.findPostByID(req.params.id)
     if (!post){
         return res.sendStatus(CodeResponsesEnum.Not_found_404);

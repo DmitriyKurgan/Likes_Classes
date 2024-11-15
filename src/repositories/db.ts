@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import * as mongoose from "mongoose";
 import {
     AttemptsSchema,
-    BlogsSchema, CommentSchema,
+    BlogsSchema, CommentSchema, LikeStatusSchema,
     PostsSchema, RecoveryCodeSchema, TokensSchema, UsersSchema, UsersSessionSchema,
 } from "../utils/mongooseShema";
 dotenv.config()
@@ -22,7 +22,7 @@ export const TokensModel = mongoose.model('refresh-tokens-blacklist', TokensSche
 export const UsersSessionModel = mongoose.model('usersSession', UsersSessionSchema)
 export const AttemptsModel = mongoose.model('attempts', AttemptsSchema)
 export const RecoveryCodeModel = mongoose.model('recoveryCode', RecoveryCodeSchema)
-// export const LikesStatusModel = mongoose.model('likesStatus', LikeStatusSchema)
+export const LikesStatusModel = mongoose.model('likesStatus', LikeStatusSchema)
 
 export async function runDB (){
     try {

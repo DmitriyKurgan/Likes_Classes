@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {CodeResponsesEnum} from "../utils/utils";
 import {
-    authMiddleware,
+    authMiddleware, validateCommentsLikesRequests,
     validateCommentsRequests,
     validateErrorsMiddleware, validationCommentOwner,
     validationCommentsFindByParamId,
@@ -28,7 +28,7 @@ commentsRouter.get('/:id',
 commentsRouter.put('/:id',
     validationCommentsFindByParamId,
     authMiddleware,
-    validateCommentsRequests,
+    validateCommentsRequests as any,
     validateErrorsMiddleware,
     validationCommentOwner,
     async (req: Request, res: Response) => {
@@ -38,6 +38,22 @@ commentsRouter.put('/:id',
         return res.sendStatus(CodeResponsesEnum.Not_found_404);
     }
     res.sendStatus(CodeResponsesEnum.Not_content_204);
+});
+
+commentsRouter.put('/:id/like-status',
+    validationCommentsFindByParamId,
+    authMiddleware,
+    validateCommentsLikesRequests as any,
+    validateErrorsMiddleware,
+   // validationCommentOwner,
+    async (req: Request, res: Response) => {
+        const commentID = req.params.id;
+        const userId = req.userId
+        const isUpdated: boolean = await commentsService.updateLikeStatus(commentID, userId!, req.body.likeStatus);
+        if (!isUpdated) {
+            return res.sendStatus(CodeResponsesEnum.Not_found_404);
+        }
+        res.sendStatus(CodeResponsesEnum.Not_content_204);
 });
 
 commentsRouter.delete('/:id',

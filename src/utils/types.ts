@@ -49,7 +49,7 @@ export enum LikeStatusEnum  {
 export type LikeStatusType = {
     parentId: string;
     userId: string;
-    login: string;
+    // login: string;
     likeStatus: LikeStatusEnum;
     addedAt: Date;
 };
