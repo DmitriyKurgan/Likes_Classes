@@ -353,17 +353,12 @@ export const tokenParser = async (
     res: Response,
     next: NextFunction
 ) => {
-    if (!req.headers.authorization){
-        return
-    }
-    const accessToken = req.headers.authorization?.split(' ')[1];
-
-    if (accessToken) {
-        const accessTokenObj = await jwtService.verifyToken(accessToken);
-        req.userId = accessTokenObj?.userId
-    }
-
-    next();
+    if (!req.headers.authorization) return next()
+    const token = req.headers.authorization.split(' ')[1]
+    const userId = await jwtService.getUserIdByToken(token)
+    if (!userId) return next()
+    req.userId = userId
+    return next()
 };
 
 export const validationCommentOwner = async (
