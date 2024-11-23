@@ -4,6 +4,7 @@ import {CommentViewModel} from "../models/view/CommentViewModel";
 import {CommentDBModel} from "../models/database/CommentDBModel";
 import {LikeStatusType} from "../utils/types";
 import {commentsQueryRepository} from "./query-repositories/comments-query-repository";
+import {UserDBModel} from "../models/database/UserDBModel";
 export const comments = [] as CommentViewModel[]
 
 export const commentsRepository = {
@@ -51,7 +52,7 @@ export const commentsRepository = {
 
         if (!comment) return null
 
-        const userIndex = comment.likesInfo.users.findIndex(u => u.userId === userId);
+        const userIndex = comment.likesInfo.users.findIndex((u: any )=> u.userId === userId);
         const currentStatus = userIndex !== -1 ? comment.likesInfo.users[userIndex].likeStatus : "None";
 
         let incLikes = 0, incDislikes = 0;
@@ -82,5 +83,28 @@ export const commentsRepository = {
 
         return comment;
 
+    },
+
+    async findUserLikeStatus(
+        commentId: string,
+        userId: ObjectId
+    ): Promise<string | null> {
+        const foundUser: any = await CommentsModel.findOne(
+            { _id: commentId },
+            {
+                "likesInfo.users": {
+                    $filter: {
+                        input: "$likesInfo.users",
+                        cond: { $eq: ["$$this.userId", userId.toString()] },
+                    },
+                },
+            }
+        );
+
+        if (!foundUser || foundUser.likesInfo.users.length === 0) {
+            return null;
+        }
+
+        return foundUser.likesInfo.users[0].likeStatus;
     }
 }

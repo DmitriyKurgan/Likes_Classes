@@ -10,7 +10,7 @@ export const CommentMapper = async (comment : CommentDBModel, userId?: string) :
     let status;
 
     if (userId) {
-        status = await commentsRepository.findUserLikeStatus(comment._id.toString(), userId);
+        status = await commentsRepository.findUserLikeStatus(comment._id.toString(), new ObjectId(userId));
     }
     console.log('status', {status, comment,userId })
     return {
