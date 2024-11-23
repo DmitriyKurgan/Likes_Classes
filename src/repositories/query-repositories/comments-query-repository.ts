@@ -8,11 +8,9 @@ import {commentsRepository} from "../comments-repository";
 export const CommentMapper = async (comment : CommentDBModel, userId?: string) : Promise<CommentViewModel> => {
 
     let status;
-
     if (userId) {
         status = await commentsRepository.findUserLikeStatus(comment._id.toString(), new ObjectId(userId));
     }
-
     return {
         id: comment._id.toString(),
         content: comment.content,
@@ -33,8 +31,8 @@ export const commentsQueryRepository = {
     async findAllCommentsByPostID(postID: string, query:any, userId: string):Promise<any | { error: string }> {
         return getCommentsFromDB(query, userId, postID)
     },
-    async findCommentByID(commentID:string){
+    async findCommentByID(commentID:string, userId: string){
         const comment = await CommentsModel.findOne({_id: new ObjectId(commentID)})
-        return comment ? CommentMapper(comment) : null
+        return comment ? CommentMapper(comment, userId) : null
     }
 }

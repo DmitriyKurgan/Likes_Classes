@@ -35,7 +35,7 @@ export const commentsService: any = {
         return await commentsRepository.updateComment(commentID, body);
     },
     async updateLikeStatus(commentID: string, userId: string, likeStatus: string): Promise<UpdateResult | any> {
-        const comment = await commentsQueryRepository.findCommentByID(commentID);
+        const comment = await commentsQueryRepository.findCommentByID(commentID, userId);
         if (!comment) return null
         return commentsRepository.updateLikeStatus(commentID, userId, likeStatus);
     },

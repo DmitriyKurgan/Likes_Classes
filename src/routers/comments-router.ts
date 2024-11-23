@@ -14,10 +14,11 @@ export const commentsRouter = Router({});
 
 commentsRouter.get('/:id',
     validationCommentsFindByParamId,
+    authMiddleware,
     validateErrorsMiddleware,
     async (req: Request, res: Response) => {
     const commentID = req.params.id;
-    const commentByID: CommentViewModel | null = await commentsQueryRepository.findCommentByID(commentID);
+    const commentByID: CommentViewModel | null = await commentsQueryRepository.findCommentByID(commentID, req.userId!);
     if (!commentID || !commentByID) {
         return res.sendStatus(CodeResponsesEnum.Not_found_404);
     }
