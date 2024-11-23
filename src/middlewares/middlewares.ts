@@ -10,6 +10,7 @@ import {devicesService} from "../services/devices-service";
 import {attemptsRepository} from "../repositories/rate-limit-repository.ts";
 import {tokensQueryRepository} from "../repositories/query-repositories/tokens-query-repository";
 import {LikeStatusEnum} from "../utils/types";
+import {ObjectId} from "mongodb";
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 const loginPattern =
@@ -347,13 +348,31 @@ export const authMiddleware = async (req:Request, res:Response, next:NextFunctio
     next();
 }
 
+export const tokenParser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    if (!req.headers.authorization){
+        return
+    }
+    const accessToken = req.headers.authorization?.split(' ')[1];
+
+    if (accessToken) {
+        const accessTokenObj = await jwtService.verifyToken(accessToken);
+        req.userId = accessTokenObj?.userId
+    }
+
+    next();
+};
+
 export const validationCommentOwner = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
     const foundComment = await commentsQueryRepository
-        .findCommentByID(req.params.id);
+        .findCommentByID(req.params.id, req.userId!);
     if (!foundComment || foundComment.commentatorInfo.userId !== req.userId) {
       return res.sendStatus(CodeResponsesEnum.Forbidden_403);
     }

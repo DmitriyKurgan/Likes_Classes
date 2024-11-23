@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {CodeResponsesEnum} from "../utils/utils";
 import {
-    authMiddleware, validateCommentsLikesRequests,
+    authMiddleware, tokenParser, validateCommentsLikesRequests,
     validateCommentsRequests,
     validateErrorsMiddleware, validationCommentOwner,
     validationCommentsFindByParamId,
@@ -14,7 +14,7 @@ export const commentsRouter = Router({});
 
 commentsRouter.get('/:id',
     validationCommentsFindByParamId,
-    authMiddleware,
+    tokenParser,
     validateErrorsMiddleware,
     async (req: Request, res: Response) => {
     const commentID = req.params.id;
