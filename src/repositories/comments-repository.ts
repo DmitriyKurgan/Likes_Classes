@@ -46,104 +46,44 @@ export const commentsRepository = {
         return result.deletedCount === 1
     },
 
-    // async updateLikeStatus(commentID: string, userId: string, likeStatus: string): Promise<UpdateResult | any> {
-    //
-    //     const comment: any = await CommentsModel.findById(commentID);
-    //
-    //     if (!comment) return null
-    //
-    //     const userIndex = comment.likesInfo.users.findIndex((u: any )=> u.userId === userId);
-    //     const currentStatus = userIndex !== -1 ? comment.likesInfo.users[userIndex].likeStatus : "None";
-    //
-    //     let incLikes = 0, incDislikes = 0;
-    //
-    //     if (likeStatus === "Like") {
-    //         incLikes = currentStatus === "Like" ? -1 : 1;
-    //         incDislikes = currentStatus === "Dislike" ? -1 : 0;
-    //     } else if (likeStatus === "Dislike") {
-    //         incLikes = currentStatus === "Like" ? -1 : 0;
-    //         incDislikes = currentStatus === "Dislike" ? -1 : 1;
-    //     } else {
-    //         incLikes = currentStatus === "Like" ? -1 : 0;
-    //         incDislikes = currentStatus === "Dislike" ? -1 : 0;
-    //     }
-    //
-    //     if (userIndex !== -1) {
-    //         if (likeStatus === "None") comment.likesInfo.users.splice(userIndex, 1);
-    //         else comment.likesInfo.users[userIndex].likeStatus = likeStatus;
-    //     } else if (likeStatus !== "None") {
-    //         comment.likesInfo.users.push({ userId, likeStatus });
-    //     }
-    //
-    //     comment.likesInfo.likesCount += incLikes;
-    //     comment.likesInfo.dislikesCount += incDislikes;
-    //     comment.likesInfo.myStatus = likeStatus;
-    //
-    //     await comment.save();
-    //
-    //     return comment;
-    //
-    // },
-
     async updateLikeStatus(commentID: string, userId: string, likeStatus: string): Promise<UpdateResult | any> {
 
         const comment: any = await CommentsModel.findById(commentID);
 
-        if (!comment) return null;
+        if (!comment) return null
 
-        const userIndex = comment.likesInfo.users.findIndex((u: any) => u.userId === userId);
+        const userIndex = comment.likesInfo.users.findIndex((u: any )=> u.userId === userId);
         const currentStatus = userIndex !== -1 ? comment.likesInfo.users[userIndex].likeStatus : "None";
 
         let incLikes = 0, incDislikes = 0;
 
         if (likeStatus === "Like") {
-            if (currentStatus === "Like") {
-                // Снимаем лайк
-                incLikes = -1;
-                likeStatus = "None";
-            } else if (currentStatus === "Dislike") {
-                // Меняем дизлайк на лайк
-                incLikes = 1;
-                incDislikes = -1;
-            } else {
-                // Ставим лайк
-                incLikes = 1;
-            }
+            incLikes = currentStatus === "Like" ? -1 : 1;
+            incDislikes = currentStatus === "Dislike" ? -1 : 0;
         } else if (likeStatus === "Dislike") {
-            if (currentStatus === "Dislike") {
-                // Снимаем дизлайк
-                incDislikes = -1;
-                likeStatus = "None";
-            } else if (currentStatus === "Like") {
-                // Меняем лайк на дизлайк
-                incDislikes = 1;
-                incLikes = -1;
-            } else {
-                // Ставим дизлайк
-                incDislikes = 1;
-            }
+            incLikes = currentStatus === "Like" ? -1 : 0;
+            incDislikes = currentStatus === "Dislike" ? -1 : 1;
+        } else {
+            incLikes = currentStatus === "Like" ? -1 : 0;
+            incDislikes = currentStatus === "Dislike" ? -1 : 0;
         }
 
-        // Обновление информации о пользователе
         if (userIndex !== -1) {
-            if (likeStatus === "None") {
-                comment.likesInfo.users.splice(userIndex, 1); // Удаляем пользователя
-            } else {
-                comment.likesInfo.users[userIndex].likeStatus = likeStatus; // Обновляем статус
-            }
+            if (likeStatus === "None") comment.likesInfo.users.splice(userIndex, 1);
+            else comment.likesInfo.users[userIndex].likeStatus = likeStatus;
         } else if (likeStatus !== "None") {
-            comment.likesInfo.users.push({ userId, likeStatus }); // Добавляем пользователя
+            comment.likesInfo.users.push({ userId, likeStatus });
         }
 
-        // Обновление счетчиков
-        comment.likesInfo.likesCount = Math.max(0, comment.likesInfo.likesCount + incLikes);
-        comment.likesInfo.dislikesCount = Math.max(0, comment.likesInfo.dislikesCount + incDislikes);
+        comment.likesInfo.likesCount += incLikes;
+        comment.likesInfo.dislikesCount += incDislikes;
+        comment.likesInfo.myStatus = likeStatus;
 
         await comment.save();
 
         return comment;
-    },
 
+    },
 
     async findUserLikeStatus(
         commentId: string,
