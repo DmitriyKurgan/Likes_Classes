@@ -48,56 +48,97 @@ export const commentsRepository = {
 
     async updateLikeStatus(
         commentId: string,
+        userId: ObjectId,
         likeStatus: string,
-        userId: string
     ): Promise<boolean> {
-        const comment: any = await CommentsModel.findById(commentId);
-        if (!comment) return false;
+        const foundComment = await commentsQueryRepository.findCommentByID(
+            commentId
+        );
 
-        const userIndex = comment.likesInfo.users.findIndex((u: any) => u.userId === userId);
-        const currentStatus = userIndex !== -1 ? comment.likesInfo.users[userIndex].likeStatus : "None";
+        if (!foundComment) {
+            return false;
+        }
 
-        let incLikes = 0;
-        let incDislikes = 0;
+        let likesCount = foundComment.likesInfo.likesCount;
+        let dislikesCount = foundComment.likesInfo.dislikesCount;
 
-        switch (currentStatus) {
+        const foundUser = await commentsRepository.findUserInLikesInfo(
+            commentId,
+            userId
+        );
+
+        if (!foundUser) {
+            await commentsRepository.pushUserInLikesInfo(
+                commentId,
+                userId,
+                likeStatus
+            );
+
+            if (likeStatus === "Like") {
+                likesCount++;
+            }
+
+            if (likeStatus === "Dislike") {
+                dislikesCount++;
+            }
+
+            return commentsRepository.updateLikesCount(
+                commentId,
+                likesCount,
+                dislikesCount
+            );
+        }
+
+        let userLikeDBStatus = await commentsRepository.findUserLikeStatus(
+            commentId,
+            userId
+        );
+
+        switch (userLikeDBStatus) {
             case "None":
-                if (likeStatus === "Like") incLikes++;
-                if (likeStatus === "Dislike") incDislikes++;
+                if (likeStatus === "Like") {
+                    likesCount++;
+                }
+
+                if (likeStatus === "Dislike") {
+                    dislikesCount++;
+                }
+
                 break;
 
             case "Like":
-                if (likeStatus === "None") incLikes--;
+                if (likeStatus === "None") {
+                    likesCount--;
+                }
+
                 if (likeStatus === "Dislike") {
-                    incLikes--;
-                    incDislikes++;
+                    likesCount--;
+                    dislikesCount++;
                 }
                 break;
 
             case "Dislike":
-                if (likeStatus === "None") incDislikes--;
-                if (likeStatus === "Like") {
-                    incDislikes--;
-                    incLikes++;
+                if (likeStatus === "None") {
+                    dislikesCount--;
                 }
-                break;
+
+                if (likeStatus === "Like") {
+                    dislikesCount--;
+                    likesCount++;
+                }
         }
 
-        if (userIndex !== -1) {
-            if (likeStatus === "None") {
-                comment.likesInfo.users.splice(userIndex, 1);
-            } else {
-                comment.likesInfo.users[userIndex].likeStatus = likeStatus;
-            }
-        } else if (likeStatus !== "None") {
-            comment.likesInfo.users.push({ userId, likeStatus });
-        }
+        await commentsRepository.updateLikesCount(
+            commentId,
+            likesCount,
+            dislikesCount
+        );
 
-        comment.likesInfo.likesCount += incLikes;
-        comment.likesInfo.dislikesCount += incDislikes;
-
-        await comment.save();
-        return true;
+        return commentsRepository.updateLikesStatus(
+            commentId,
+            userId,
+            likeStatus
+        );
     },
 
     async findUserLikeStatus(
@@ -121,5 +162,75 @@ export const commentsRepository = {
         }
 
         return foundUser.likesInfo.users[0].likeStatus;
+    },
+
+    async pushUserInLikesInfo(
+        commentId: string,
+        userId: ObjectId,
+        likeStatus: string
+    ): Promise<boolean> {
+        const result: any = await CommentsModel.updateOne(
+            { _id: commentId },
+            {
+                $push: {
+                    "likesInfo.users": {
+                        userId,
+                        likeStatus,
+                    },
+                },
+            }
+        );
+        return result.matchedCount === 1;
+    },
+
+    async updateLikesCount(
+        commentId: string,
+        likesCount: number,
+        dislikesCount: number
+    ): Promise<boolean> {
+        const result: any = await CommentsModel.updateOne(
+            { _id: commentId },
+            {
+                $set: {
+                    "likesInfo.likesCount": likesCount,
+                    "likesInfo.dislikesCount": dislikesCount,
+                },
+            }
+        );
+        return result.matchedCount === 1;
+    },
+
+    async updateLikesStatus(
+        commentId: string,
+        userId: ObjectId,
+        likeStatus: string
+    ): Promise<boolean> {
+        const result: any = await CommentsModel.updateOne(
+            { _id: commentId, "likesInfo.users.userId": userId },
+            {
+                $set: {
+                    "likesInfo.users.$.likeStatus": likeStatus,
+                },
+            }
+        );
+        return result.matchedCount === 1;
+    },
+
+    async findUserInLikesInfo(
+        commentId: string,
+        userId: ObjectId
+    ): Promise<CommentDBModel | null> {
+        const foundUser = await CommentsModel.findOne(
+            CommentsModel.findOne({
+                _id: commentId,
+                "likesInfo.users.userId": userId,
+            })
+        );
+
+        if (!foundUser) {
+            return null;
+        }
+
+        return foundUser;
     }
 }
