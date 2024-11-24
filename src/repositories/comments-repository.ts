@@ -46,43 +46,58 @@ export const commentsRepository = {
         return result.deletedCount === 1
     },
 
-    async updateLikeStatus(commentID: string, userId: string, likeStatus: string): Promise<UpdateResult | any> {
+    async updateLikeStatus(
+        commentId: string,
+        likeStatus: string,
+        userId: string
+    ): Promise<boolean> {
+        const comment: any = await CommentsModel.findById(commentId);
+        if (!comment) return false;
 
-        const comment: any = await CommentsModel.findById(commentID);
-
-        if (!comment) return null
-
-        const userIndex = comment.likesInfo.users.findIndex((u: any )=> u.userId === userId);
+        const userIndex = comment.likesInfo.users.findIndex((u: any) => u.userId === userId);
         const currentStatus = userIndex !== -1 ? comment.likesInfo.users[userIndex].likeStatus : "None";
 
-        let incLikes = 0, incDislikes = 0;
+        let incLikes = 0;
+        let incDislikes = 0;
 
-        if (likeStatus === "Like") {
-            incLikes = currentStatus === "Like" ? -1 : 1;
-            incDislikes = currentStatus === "Dislike" ? -1 : 0;
-        } else if (likeStatus === "Dislike") {
-            incLikes = currentStatus === "Like" ? -1 : 0;
-            incDislikes = currentStatus === "Dislike" ? -1 : 1;
-        } else {
-            incLikes = currentStatus === "Like" ? -1 : 0;
-            incDislikes = currentStatus === "Dislike" ? -1 : 0;
+        switch (currentStatus) {
+            case "None":
+                if (likeStatus === "Like") incLikes++;
+                if (likeStatus === "Dislike") incDislikes++;
+                break;
+
+            case "Like":
+                if (likeStatus === "None") incLikes--;
+                if (likeStatus === "Dislike") {
+                    incLikes--;
+                    incDislikes++;
+                }
+                break;
+
+            case "Dislike":
+                if (likeStatus === "None") incDislikes--;
+                if (likeStatus === "Like") {
+                    incDislikes--;
+                    incLikes++;
+                }
+                break;
         }
 
         if (userIndex !== -1) {
-            if (likeStatus === "None") comment.likesInfo.users.splice(userIndex, 1);
-            else comment.likesInfo.users[userIndex].likeStatus = likeStatus;
+            if (likeStatus === "None") {
+                comment.likesInfo.users.splice(userIndex, 1);
+            } else {
+                comment.likesInfo.users[userIndex].likeStatus = likeStatus;
+            }
         } else if (likeStatus !== "None") {
             comment.likesInfo.users.push({ userId, likeStatus });
         }
 
         comment.likesInfo.likesCount += incLikes;
         comment.likesInfo.dislikesCount += incDislikes;
-        comment.likesInfo.myStatus = likeStatus;
 
         await comment.save();
-
-        return comment;
-
+        return true;
     },
 
     async findUserLikeStatus(
