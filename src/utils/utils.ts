@@ -108,15 +108,17 @@ export const getCommentsFromDB = async (query:any, userId:string, postID?:string
             .skip((query.pageNumber - 1) * query.pageSize)
             .limit(query.pageSize)
             .lean();
-
         const totalCount = await CommentsModel.countDocuments(filter);
+        const mappedItems = await Promise.all(
+            items.map((comment: CommentDBModel) => CommentMapper(comment, userId))
+        );
 
         return {
             pagesCount: Math.ceil(totalCount / query.pageSize),
             page: query.pageNumber,
             pageSize: query.pageSize,
             totalCount,
-            items: items.map((comment:CommentDBModel) => CommentMapper(comment, userId)),
+            items: mappedItems,
         };
     } catch (e) {
         console.log(e);
