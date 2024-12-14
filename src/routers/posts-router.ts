@@ -6,7 +6,7 @@ import {
     validatePostsRequests, validationPostsCreation
 } from "../middlewares/middlewares";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
-import {posts, postsService} from "../services/posts-service";
+import {posts} from "../services/posts-service";
 import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {blogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
 import {commentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
@@ -16,114 +16,61 @@ import {PostViewModel} from "../models/view/PostViewModel";
 import {PostDBModel} from "../models/database/PostDBModel";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {BlogViewModel} from "../models/view/BlogViewModel";
+import {PostsController} from "../controllers/postsController";
 
-export const postsRouter = Router({});
+export const postsRouter = Router({})
 
-postsRouter.get('/', async (req:Request, res:Response)=>{
-    const queryValues = getQueryValues({
-        pageNumber: req.query.pageNumber,
-        pageSize: req.query.pageSize,
-        sortBy: req.query.sortBy,
-        sortDirection: req.query.sortDirection,
-        searchNameTerm: req.query.searchNameTerm
-    })
-    const posts =  await postsQueryRepository.getAllPosts({...queryValues})
-    if (!posts || !posts.items.length) {
-        return res.status(CodeResponsesEnum.OK_200).send([]);
-    }
-    res.status(CodeResponsesEnum.OK_200).send(posts);
-});
+const postsController = new PostsController()
 
-postsRouter.get('/:id', async (req:Request, res:Response)=>{
-    const postID:string = req.params.id;
-    const postByID:PostDBModel|null = await postsQueryRepository.findPostByID(postID);
-    if (!postID || !postByID){
-       return res.sendStatus(CodeResponsesEnum.Not_found_404)
-    }
-    res.status(CodeResponsesEnum.OK_200).send(postByID);
-});
+postsRouter.get(
+    '/',
+    postsController.getPosts.bind(postsController)
+)
 
-postsRouter.get('/:id/comments', authMiddleware, validateErrorsMiddleware, async (req:Request, res:Response)=>{
-    const queryValues = getQueryValues({
-        pageNumber: req.query.pageNumber,
-        pageSize: req.query.pageSize,
-        sortBy: req.query.sortBy,
-        sortDirection: req.query.sortDirection,
-    })
-    const postID:string = req.params.id;
-    const postByID:PostDBModel|null = await postsQueryRepository.findPostByID(postID);
-    console.log('req.userId: ', req.userId)
-    if (!postID || !postByID){
-        return res.sendStatus(CodeResponsesEnum.Not_found_404)
-    }
-    const commentsForParticularPost = await commentsQueryRepository.findAllCommentsByPostID(postID, queryValues, req.userId!)
-    if (!commentsForParticularPost || !commentsForParticularPost.items.length) {
-        return res.status(CodeResponsesEnum.OK_200).send([]);
-    }
-    res.status(CodeResponsesEnum.OK_200).send(commentsForParticularPost);
-});
+postsRouter.get(
+    '/:id',
+    postsController.getSpecificPost.bind(postsController)
+)
 
-postsRouter.post('/',
-    validateAuthorization,
-    validatePostsRequests,
-    validateBlogIdForPostsRequests,
-    validationPostsCreation,
-    validateErrorsMiddleware,
-    async (req:Request, res:Response)=>{
-    const blog: BlogViewModel | null = await blogsQueryRepository.findBlogByID(req.body.blogId)
-    if (!blog){
-        return res.sendStatus(CodeResponsesEnum.Not_found_404);
-    }
-    const newPost: PostViewModel| null = await postsService.createPost( req.body, blog.name, blog.id);
-    if (!newPost) {
-        return
-    }
-    posts.push(newPost);
-    res.status(CodeResponsesEnum.Created_201).send(newPost);
-});
-
-postsRouter.post('/:id/comments',
+postsRouter.get(
+    '/:id/comments',
     authMiddleware,
-    validateCommentsRequests as any,
     validateErrorsMiddleware,
-    async (req:Request, res:Response)=>{
-        console.log('123')
-    const post: PostDBModel | null = await postsQueryRepository.findPostByID(req.params.id)
-    if (!post){
-        return res.sendStatus(CodeResponsesEnum.Not_found_404);
-    }
-    const user = await usersRepository.findUserByID(req.userId!)
-    const newComment: CommentViewModel | null = await commentsService.createComment(req.body, post._id.toString(), req.userId!, user.accountData.userName);
-    if (!newComment) {
-        return
-    }
-    comments.push(newComment);
-    res.status(CodeResponsesEnum.Created_201).send(newComment);
-});
+    postsController.getAllCommentsOfPost.bind(postsController)
+)
 
-
-postsRouter.put('/:id',
+postsRouter.post(
+    '/',
     validateAuthorization,
     validatePostsRequests,
     validateBlogIdForPostsRequests,
     validationPostsCreation,
     validateErrorsMiddleware,
-    async (req:Request, res:Response)=>{
-    const postID = req.params.id;
-    const isUpdated = await postsService.updatePost(postID, req.body);
+    postsController.createPost.bind(postsController)
+)
 
-    if (!isUpdated || !postID){
-        return res.sendStatus(CodeResponsesEnum.Not_found_404);
-    }
-    const postByID = await postsQueryRepository.findPostByID(postID);
-    res.status(CodeResponsesEnum.Not_content_204).send(postByID);
-});
+postsRouter.post(
+    '/:id/comments',
+    authMiddleware,
+    validateCommentsRequests,
+    validateErrorsMiddleware,
+    postsController.createCommentForPost.bind(postsController)
+)
 
-postsRouter.delete('/:id', validateAuthorization, validateErrorsMiddleware, async (req:Request, res:Response)=>{
-    const postID = req.params.id;
-    const isDeleted = await postsService.deletePost(postID);
-    if(!isDeleted || !postID){
-        return res.sendStatus(CodeResponsesEnum.Not_found_404);
-    }
-    res.sendStatus(CodeResponsesEnum.Not_content_204);
-});
+
+postsRouter.put(
+    '/:id',
+    validateAuthorization,
+    validatePostsRequests,
+    validateBlogIdForPostsRequests,
+    validationPostsCreation,
+    validateErrorsMiddleware,
+    postsController.updatePost.bind(postsController)
+)
+
+postsRouter.delete(
+    '/:id',
+    validateAuthorization,
+    validateErrorsMiddleware,
+    postsController.deletePost.bind(postsController)
+)
