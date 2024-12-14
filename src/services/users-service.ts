@@ -1,4 +1,4 @@
-import {usersRepository} from "../repositories/users-repository";
+import {UsersRepository} from "../repositories/users-repository";
 import bcrypt from 'bcrypt'
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
@@ -8,10 +8,14 @@ import {UserViewModel} from "../models/view/UserViewModel";
 
 export const users = [] as UserViewModel[]
 
-export const usersService:any = {
-
+export class UsersService {
+    usersRepository: UsersRepository
+    constructor(){
+        this.usersRepository = new UsersRepository()
+    }
     async createUser(login:string, email:string, password:string):Promise<UserViewModel | null> {
-        const passwordSalt = await bcrypt.genSalt(10);
+
+        const passwordSalt = await bcrypt.genSalt(10)
 
         const passwordHash = await this._generateHash(password, passwordSalt)
 
@@ -33,33 +37,46 @@ export const usersService:any = {
                 isConfirmed:false,
             }
         )
-        const createdUser = await usersRepository.createUser(newUser);
+
+        const createdUser = await this.usersRepository.createUser(newUser)
+
         return createdUser
-    },
-   async deleteUser(userID:string): Promise<boolean>{
-       return await usersRepository.deleteUser(userID);
-    },
+    }
+    async deleteUser(userID:string): Promise<boolean>{
+        return await this.usersRepository.deleteUser(userID)
+    }
     async checkCredentials(loginOrEmail:string, password:string):Promise<UserDBModel | null> {
-        const user: UserDBModel | null = await usersRepository.findByLoginOrEmail(loginOrEmail);
+
+        const user: UserDBModel | null = await this.usersRepository.findByLoginOrEmail(loginOrEmail)
+
         if (!user){
             return null
         }
+
         const isPasswordsMatch = await bcrypt.compare(password, user.accountData.passwordHash)
+
         if (!isPasswordsMatch) return null
+
         return user
-    },
+    }
 
     async _generateHash(password:string, salt:string):Promise<string>{
-        const hash = await bcrypt.hash(password, salt);
+        const hash = await bcrypt.hash(password, salt)
         return hash
-    },
+    }
 
     async findUserRecoveryCodeAndChangeNewPassword(newPassword:string, recoveryCode:string):Promise<any> {
-        const userCode = await usersRepository.findUserByRecoveryCode(recoveryCode);
+
+        const userCode = await this.usersRepository.findUserByRecoveryCode(recoveryCode)
+
         if (!userCode) return
+
         const passwordSalt = await bcrypt.genSalt(10)
+
         const hash = await this._generateHash(newPassword, passwordSalt)
-        const result = await usersRepository.updateUserPassword(userCode.email, hash)
+
+        const result = await this.usersRepository.updateUserPassword(userCode.email, hash)
+
         return result
     }
 }

@@ -1,43 +1,35 @@
-import {Request, Response, Router} from "express";
-import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
+import {Router} from "express";
 import {
     validateAuthorization,
     validateErrorsMiddleware, validateUserFindByParamId, validateUsersRequests,
 } from "../middlewares/middlewares";
-import {users, usersService} from "../services/users-service";
-import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
-import {UserViewModel} from "../models/view/UserViewModel";
+import {UsersController} from "../controllers/usersController";
 
-export const usersRouter = Router({});
+export const usersRouter = Router({})
 
-usersRouter.get('/', validateAuthorization, validateErrorsMiddleware, async (req: Request, res: Response) => {
-    const queryValues = getQueryValues({
-        pageNumber:req.query.pageNumber,
-        pageSize:req.query.pageSize,
-        sortBy:req.query.sortBy,
-        sortDirection:req.query.sortDirection,
-        searchLoginTerm:req.query.searchLoginTerm,
-        searchEmailTerm:req.query.searchEmailTerm});
-    const users = await usersQueryRepository.getAllUsers({...queryValues});
-    res.status(CodeResponsesEnum.OK_200).send(users)
-})
+const usersController = new UsersController()
+usersRouter.get(
+    '/',
+    validateAuthorization,
+    validateErrorsMiddleware,
+    usersController.getUsers.bind(usersController)
+)
 
 
-usersRouter.post('/', validateAuthorization, validateUsersRequests, validateErrorsMiddleware, async (req: Request, res: Response) => {
-    const newUser: UserViewModel | null = await usersService.createUser(req.body.login, req.body.email, req.body.password);
-    if (newUser) {
-        users.push(newUser);
-        res.status(CodeResponsesEnum.Created_201).send(newUser);
-    }
-});
+usersRouter.post(
+    '/',
+    validateAuthorization,
+    validateUsersRequests,
+    validateErrorsMiddleware,
+    usersController.createUser.bind(usersController)
+)
 
-usersRouter.delete('/:id', validateAuthorization, validateUserFindByParamId, validateErrorsMiddleware, async (req: Request, res: Response) => {
-    const userID: string = req.params.id;
-    const isDeleted: boolean = await usersService.deleteUser(userID);
-    if (!isDeleted || !userID) {
-        return res.sendStatus(CodeResponsesEnum.Not_found_404);
-    }
-    res.sendStatus(CodeResponsesEnum.Not_content_204);
-})
+usersRouter.delete(
+    '/:id',
+    validateAuthorization,
+    validateUserFindByParamId,
+    validateErrorsMiddleware,
+    usersController.deleteUser.bind(usersController)
+)
 
 
