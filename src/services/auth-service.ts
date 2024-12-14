@@ -1,6 +1,6 @@
 import {RecoveryCodeType, TokenType} from "../utils/types";
 import bcrypt from 'bcrypt'
-import {authRepository} from "../repositories/auth-repository";
+import {AuthRepository} from "../repositories/auth-repository";
 import {authQueryRepository} from "../repositories/query-repositories/auth-query-repository";
 import {randomUUID} from "crypto";
 import {emailService} from "./email-service";
@@ -9,16 +9,24 @@ import {tokensService} from "./tokens-service";
 import {devicesService} from "./devices-service";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {UserViewModel} from "../models/view/UserViewModel";
+import { inject, injectable } from "inversify";
 export const users = [] as UserViewModel[]
 
-export const authService:any = {
+export class AuthService {
+    authRepository: AuthRepository
+    constructor(
+        // @inject(AuthService) protected authService: AuthService,
+        // @inject() protected usersRepository: UsersRepository
+    ) {
+        this.authRepository = new AuthRepository()
+    }
     async loginUser (user: UserDBModel & {id:string}, deviceId: string, ip: string, deviceTitle: string): Promise<TokenType> {
         const {refreshToken, accessToken} = await jwtService.createJWT(user, deviceId);
         const lastActiveDate = jwtService.getLastActiveDateFromToken(refreshToken);
         const session = await devicesService.createDevice(user.id, ip, deviceTitle , lastActiveDate, deviceId)
         return {refreshToken, accessToken}
-    },
-    async refreshToken (oldRefreshToken: string, user: UserViewModel, deviceId: string, ip: string): Promise<TokenType> {
+    }
+    async refreshToken (oldRefreshToken: string, user: any, deviceId: string, ip: string): Promise<TokenType> {
 
         const {refreshToken, accessToken} = await jwtService.createJWT(user, deviceId);
 
@@ -31,7 +39,7 @@ export const authService:any = {
         await devicesService.updateDevice(ip, deviceId, newIssuedAt);
         return {accessToken, refreshToken};
 
-    },
+    }
     async confirmRegistration(confirmationCode:string):Promise<boolean>{
 
         const userAccount: UserDBModel | null = await authQueryRepository.findUserByEmailConfirmationCode(confirmationCode);
@@ -42,15 +50,15 @@ export const authService:any = {
         if (userAccount.emailConfirmation.confirmationCode !== confirmationCode) return false;
         if (userAccount.emailConfirmation.expirationDate! < new Date()) return false;
 
-        return await authRepository.updateConfirmation(userAccount._id.toString());
+        return await this.authRepository.updateConfirmation(userAccount._id.toString());
 
-    },
+    }
     async updateConfirmationCode(userAccount:UserDBModel, confirmationCode:string):Promise<boolean>{
-        return await authRepository.updateConfirmationCode(userAccount._id.toString(), confirmationCode);
-    },
+        return await this.authRepository.updateConfirmationCode(userAccount._id.toString(), confirmationCode);
+    }
     async _generateHash(password:string, salt:string):Promise<string>{
         return await bcrypt.hash(password, salt);
-    },
+    }
     async resendEmail(email: string): Promise<boolean> {
         const userAccount: UserDBModel | null = await authQueryRepository.findByLoginOrEmail(email);
 
@@ -62,11 +70,11 @@ export const authService:any = {
 
         await emailService.sendEmail(userAccount.accountData.email, newConfirmationCode)
 
-        return authService.updateConfirmationCode(
+        return this.updateConfirmationCode(
             userAccount,
             newConfirmationCode
         );
-    },
+    }
     async findUserByEmailAndSendHimLetter(email: string): Promise<any> {
 
         const recoveryCode: RecoveryCodeType = {
@@ -74,16 +82,15 @@ export const authService:any = {
             recoveryCode: randomUUID()
         }
 
-        const result = await authRepository.addRecoveryUserCode(recoveryCode)
+        const result = await this.authRepository.addRecoveryUserCode(recoveryCode)
 
         try {
-           await emailService.sendEmailRecovery(recoveryCode)
+            await emailService.sendEmailRecovery(recoveryCode)
         } catch (error) {
             console.log(error)
             return null
         }
 
         return result
-    },
-
+    }
 }
