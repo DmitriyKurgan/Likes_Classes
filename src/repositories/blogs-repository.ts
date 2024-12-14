@@ -4,7 +4,7 @@ import {BlogViewModel} from "../models/view/BlogViewModel";
 import {BlogDBModel} from "../models/database/BlogDBModel";
 export const blogs = [] as BlogDBModel[]
 
-export const blogsRepository = {
+export class BlogsRepository {
     async createBlog(newBlog:BlogDBModel):Promise<BlogViewModel | null> {
         const blog = await BlogModel.create(newBlog);
         return {
@@ -15,18 +15,18 @@ export const blogsRepository = {
             createdAt: newBlog.createdAt,
             isMembership: newBlog.isMembership
         }
-    },
+    }
     async updateBlog(blogID:string, body: BlogDBModel):Promise<boolean> {
         const result: UpdateResult<BlogDBModel>= await BlogModel.updateOne({_id: new ObjectId(blogID)},
             {$set:{name: body.name,
-            description: body.description,
-            websiteUrl: body.websiteUrl
-            }}
+                    description: body.description,
+                    websiteUrl: body.websiteUrl
+                }}
         );
         return result.matchedCount === 1;
-    },
-   async deleteBlog(blogID:string): Promise<boolean>{
-       const result: any = await BlogModel.deleteOne({_id: new ObjectId(blogID)});
-       return result.deletedCount === 1
+    }
+    async deleteBlog(blogID:string): Promise<boolean>{
+        const result: any = await BlogModel.deleteOne({_id: new ObjectId(blogID)});
+        return result.deletedCount === 1
     }
 }
