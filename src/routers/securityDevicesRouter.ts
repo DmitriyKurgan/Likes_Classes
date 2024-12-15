@@ -1,51 +1,31 @@
-import {Request, Response, Router} from "express";
+import {Router} from "express";
 import {
     authMiddleware,
     validateErrorsMiddleware, validationDeviceOwner, validationDevicesFindByParamId,
 } from "../middlewares/middlewares";
-
-import {devicesService} from "../services/devices-service";
-import {jwtService} from "../application/jwt-service";
-import {devicesQueryRepository} from "../repositories/query-repositories/devices-query-repository";
-import {CodeResponsesEnum} from "../utils/utils";
+import {SecurityDevicesController} from "../controllers/securityDevicesController";
 
 export const securityDevicesRouter = Router({});
 
-securityDevicesRouter.get('/', async (req:Request, res:Response)=>{
-
-    const cookieRefreshToken = req.cookies.refreshToken;
-    const userId = await jwtService.getUserIdByToken(cookieRefreshToken);
-    if (userId) {
-        const foundDevices = await devicesQueryRepository.getAllDevices(
-            userId
-        );
-     return res.status(CodeResponsesEnum.OK_200).send(foundDevices);
-    } else {
-      return res.sendStatus(401);
-    }
-
-})
-
-securityDevicesRouter.delete('/:deviceId', validationDevicesFindByParamId, validateErrorsMiddleware, validationDeviceOwner, async (req:Request, res:Response)=>{
-    const isDeleted = await devicesService.deleteDevice(
-        req.params.deviceId
-    );
-    if (isDeleted) {
-        res.sendStatus(204);
-    } else {
-        res.sendStatus(404);
-    }
-})
+const securityDevicesController = new SecurityDevicesController()
+securityDevicesRouter.get(
+    '/',
+    securityDevicesController.getAllUserDevices.bind(securityDevicesController)
+)
 
 
-securityDevicesRouter.delete('/', authMiddleware, validateErrorsMiddleware, async (req:Request, res:Response)=>{
-    const cookieRefreshToken = req.cookies.refreshToken;
-    const deviceId = jwtService.getDeviceIdFromToken(cookieRefreshToken)
-    const isDeviceValid = await devicesService.findDeviceById(deviceId)
-    if (deviceId && isDeviceValid) {
-        await devicesService.deleteAllOldDevices(deviceId);
-        res.sendStatus(204);
-    } else {
-        res.sendStatus(401);
-    }
-})
+securityDevicesRouter.delete(
+    '/:deviceId',
+    validationDevicesFindByParamId,
+    validateErrorsMiddleware,
+    validationDeviceOwner,
+    securityDevicesController.deleteDevice.bind(securityDevicesController)
+)
+
+
+securityDevicesRouter.delete(
+    '/',
+    authMiddleware,
+    validateErrorsMiddleware,
+    securityDevicesController.deleteAllOldDevices.bind(securityDevicesController)
+)

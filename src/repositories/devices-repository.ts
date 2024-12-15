@@ -1,15 +1,13 @@
+import {DeviceViewModel} from "../models/view/DeviceViewModel";
 import {UsersSessionModel} from "./db";
 import {DeleteResult} from "mongodb";
-import {DeviceViewModel} from "../models/view/DeviceViewModel";
 
 export const devices = [] as DeviceViewModel[]
 
-export const devicesRepository = {
-
+export class SecurityDevicesRepository {
     async createDevice(session:DeviceViewModel){
-        return UsersSessionModel.create(session);
-    },
-
+        return UsersSessionModel.create(session)
+    }
     async updateDevice(
         ip: string,
         deviceId: string,
@@ -23,18 +21,18 @@ export const devicesRepository = {
                     ip,
                 },
             }
-        );
-        return result.matchedCount === 1;
-    },
-   async deleteDevice(deviceID:string){
-       const result: DeleteResult = await UsersSessionModel.deleteOne({deviceId: deviceID});
-       return result.deletedCount === 1;
-    },
+        )
+        return result.matchedCount === 1
+    }
+    async deleteDevice(deviceID:string){
+        const result: DeleteResult = await UsersSessionModel.deleteOne({deviceId: deviceID})
+        return result.deletedCount === 1
+    }
     async deleteAllOldDevices(currentDeviceID:string){
-        return UsersSessionModel.deleteMany({deviceId: {$ne: currentDeviceID}});
-    },
+        return UsersSessionModel.deleteMany({deviceId: {$ne: currentDeviceID}})
+    }
     async findDeviceById(deviceID:string){
-        const result: DeviceViewModel | null = await UsersSessionModel.findOne({deviceId:deviceID});
+        const result: DeviceViewModel | null = await UsersSessionModel.findOne({deviceId:deviceID})
         return result
     }
 }
