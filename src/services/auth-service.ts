@@ -6,24 +6,26 @@ import {randomUUID} from "crypto";
 import {emailService} from "./email-service";
 import {jwtService} from "../application/jwt-service";
 import {tokensService} from "./tokens-service";
-import {devicesService} from "./devices-service";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {UserViewModel} from "../models/view/UserViewModel";
 import { inject, injectable } from "inversify";
+import {SecurityDevicesService} from "./devices-service";
 export const users = [] as UserViewModel[]
 
 export class AuthService {
     authRepository: AuthRepository
+    securityDevicesService: SecurityDevicesService
     constructor(
         // @inject(AuthService) protected authService: AuthService,
         // @inject() protected usersRepository: UsersRepository
     ) {
         this.authRepository = new AuthRepository()
+        this.securityDevicesService = new SecurityDevicesService()
     }
-    async loginUser (user: UserDBModel & {id:string}, deviceId: string, ip: string, deviceTitle: string): Promise<TokenType> {
+    async loginUser (user: UserDBModel & {id:string} | any, deviceId: string, ip: string, deviceTitle: string): Promise<TokenType> {
         const {refreshToken, accessToken} = await jwtService.createJWT(user, deviceId);
         const lastActiveDate = jwtService.getLastActiveDateFromToken(refreshToken);
-        const session = await devicesService.createDevice(user.id, ip, deviceTitle , lastActiveDate, deviceId)
+        const session = await this.securityDevicesService.createDevice(user.id, ip, deviceTitle , lastActiveDate, deviceId)
         return {refreshToken, accessToken}
     }
     async refreshToken (oldRefreshToken: string, user: any, deviceId: string, ip: string): Promise<TokenType> {
@@ -36,7 +38,7 @@ export class AuthService {
         );
 
         const newIssuedAt = newRefreshTokenObj!.iat;
-        await devicesService.updateDevice(ip, deviceId, newIssuedAt);
+        await this.securityDevicesService.updateDevice(ip, deviceId, newIssuedAt);
         return {accessToken, refreshToken};
 
     }

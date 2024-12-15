@@ -3,13 +3,15 @@ import {getCommentsFromDB} from "../../utils/utils";
 import {CommentsModel} from "../db";
 import {CommentDBModel} from "../../models/database/CommentDBModel";
 import {CommentViewModel} from "../../models/view/CommentViewModel";
-import {commentsRepository} from "../comments-repository";
+import {CommentsRepository} from "../comments-repository";
+
+const commentsRepository = new CommentsRepository()
 
 export const CommentMapper = async (comment : CommentDBModel, userId?: string) : Promise<CommentViewModel> => {
 
-    let status;
+    let status
     if (userId) {
-        status = await commentsRepository.findUserLikeStatus(comment._id.toString(), new ObjectId(userId));
+        status = await commentsRepository.findUserLikeStatus(comment._id.toString(), new ObjectId(userId))
     }
     return {
         id: comment._id.toString(),

@@ -6,11 +6,13 @@ import {commentsQueryRepository} from "../repositories/query-repositories/commen
 import {CodeResponsesEnum} from "../utils/utils";
 import {jwtService} from "../application/jwt-service";
 import {authQueryRepository} from "../repositories/query-repositories/auth-query-repository";
-import {devicesService} from "../services/devices-service";
 import {attemptsRepository} from "../repositories/rate-limit-repository.ts";
 import {tokensQueryRepository} from "../repositories/query-repositories/tokens-query-repository";
 import {LikeStatusEnum} from "../utils/types";
-import {ObjectId} from "mongodb";
+import {SecurityDevicesService} from "../services/devices-service";
+
+const securityDevicesService = new SecurityDevicesService()
+
 const websiteUrlPattern =
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 const loginPattern =
@@ -414,7 +416,7 @@ export const validationPostsCreation = body("blogId").custom(async (value) => {
 
 export const validationDevicesFindByParamId = param("deviceId").custom(
     async (value) => {
-        const result = await devicesService.findDeviceById(value);
+        const result = await securityDevicesService.findDeviceById(value);
         if (!result) {
             throw new Error("ID not found");
         }
@@ -444,7 +446,7 @@ export const validationDeviceOwner = async (
     }
 
     const deviceId = req.params.deviceId;
-    const device = await devicesService.findDeviceById(deviceId);
+    const device = await securityDevicesService.findDeviceById(deviceId);
 
     const deviceUserId = device?.userId;
     const cookieUserId = cookieRefreshTokenObj.userId.toString();
@@ -494,7 +496,7 @@ export const validationRefreshToken = async (
 
     const lastActiveDate = jwtService.getLastActiveDateFromToken(refreshToken)
 
-    const userSession = await devicesService.findDeviceById(currentDeviceId)
+    const userSession = await securityDevicesService.findDeviceById(currentDeviceId)
 
     if (!userSession) return res.sendStatus(401)
 

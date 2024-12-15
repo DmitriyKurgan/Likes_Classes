@@ -7,14 +7,18 @@ import {commentsQueryRepository} from "../repositories/query-repositories/commen
 import {BlogViewModel} from "../models/view/BlogViewModel";
 import {blogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
-import {usersRepository} from "../repositories/users-repository";
 import {CommentViewModel} from "../models/view/CommentViewModel";
-import {comments, commentsService} from "../services/comments-service";
+import {comments, CommentsService} from "../services/comments-service";
+import {UsersRepository} from "../repositories/users-repository";
 
 export class PostsController {
     private postsService: PostsService
+    private usersRepository: UsersRepository
+    private commentsService: CommentsService
     constructor() {
         this.postsService = new PostsService()
+        this.usersRepository = new UsersRepository()
+        this.commentsService = new CommentsService()
     }
 
     async getPosts (req:Request, res:Response){
@@ -99,8 +103,8 @@ export class PostsController {
             return res.sendStatus(CodeResponsesEnum.Not_found_404)
         }
 
-        const user = await usersRepository.findUserByID(req.userId!)
-        const newComment: CommentViewModel | null = await commentsService.createComment(req.body, post._id.toString(), req.userId!, user.accountData.userName)
+        const user = await this.usersRepository.findUserByID(req.userId!)
+        const newComment: CommentViewModel | null = await this.commentsService.createComment(req.body, post._id.toString(), req.userId!, user.accountData.userName)
 
         if (!newComment) {
             return

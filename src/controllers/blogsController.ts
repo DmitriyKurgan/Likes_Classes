@@ -5,12 +5,14 @@ import {blogsQueryRepository} from "../repositories/query-repositories/blogs-que
 import {BlogViewModel} from "../models/view/BlogViewModel";
 import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
-import {posts, postsService} from "../services/posts-service";
+import {posts, PostsService} from "../services/posts-service";
 
 export class BlogsController {
     private blogsService: BlogsService
+    private postsService: PostsService
     constructor() {
         this.blogsService = new BlogsService()
+        this.postsService = new PostsService()
     }
     async getBlogs (req:Request, res:Response){
         const queryValues = getQueryValues({
@@ -75,7 +77,7 @@ export class BlogsController {
             res.sendStatus(CodeResponsesEnum.Not_found_404);
             return
         }
-        const newPost: PostViewModel | null = await postsService.createPost(req.body, blogByID.name, blogID);
+        const newPost: PostViewModel | null = await this.postsService.createPost(req.body, blogByID.name, blogID);
         if (newPost){
             posts.push(newPost);
             res.status(CodeResponsesEnum.Created_201).send(newPost);

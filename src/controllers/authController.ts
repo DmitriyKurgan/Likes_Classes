@@ -1,26 +1,30 @@
 import {Request, Response} from "express";
-import {usersService} from "../services/users-service";
 import {CodeResponsesEnum} from "../utils/utils";
-
 import {jwtService} from "../application/jwt-service";
 import {AuthService} from "../services/auth-service";
 import {emailService} from "../services/email-service";
-import {usersRepository} from "../repositories/users-repository";
 import {tokensService} from "../services/tokens-service";
 import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
-import {devicesService} from "../services/devices-service";
 import {randomUUID, UUID} from "crypto";
 import {UserViewModel} from "../models/view/UserViewModel";
+import {UsersService} from "../services/users-service";
+import {UsersRepository} from "../repositories/users-repository";
+import {SecurityDevicesService} from "../services/devices-service";
 
 export class AuthController {
     private authService: AuthService
+    private usersService: UsersService
+    private usersRepository: UsersRepository
+    private securityDevicesService: SecurityDevicesService
     constructor() {
         this.authService = new AuthService()
-    }
+        this.usersService = new UsersService()
+        this.usersRepository = new UsersRepository()
+        this.securityDevicesService = new SecurityDevicesService()}
     async loginUser (req: Request, res: Response)  {
 
         const {loginOrEmail, password} = req.body
-        const user = await usersService.checkCredentials(loginOrEmail, password)
+        const user = await this.usersService.checkCredentials(loginOrEmail, password)
 
         if (!user) {
             return res.sendStatus(CodeResponsesEnum.Unauthorized_401)
@@ -39,9 +43,8 @@ export class AuthController {
     }
 
     async registerUser (req: Request, res: Response) {
-        const dbUser: UserViewModel | null = await usersService.createUser(req.body.login, req.body.email, req.body.password);
-        console.log('dbUser: ', dbUser)
-        const userAccount = await usersRepository.findByLoginOrEmail(req.body.email);
+        const dbUser: UserViewModel | null = await this.usersService.createUser(req.body.login, req.body.email, req.body.password);
+        const userAccount = await this.usersRepository.findByLoginOrEmail(req.body.email);
         if (!userAccount) {
             return res.sendStatus(CodeResponsesEnum.Not_found_404)
         }
@@ -86,7 +89,7 @@ export class AuthController {
         if (!myID) {
         return res.sendStatus(CodeResponsesEnum.Unauthorized_401);
         }
-        const user = await usersRepository.findUserByID(myID);
+        const user = await this.usersRepository.findUserByID(myID);
         if (!user) {
             return res.sendStatus(CodeResponsesEnum.Unauthorized_401)
         }
@@ -109,7 +112,7 @@ export class AuthController {
         if (!clearTokensPair) return res.sendStatus(CodeResponsesEnum.Unauthorized_401)
 
         if (deviceId) {
-            await devicesService.deleteDevice(deviceId);
+            await this.securityDevicesService.deleteDevice(deviceId);
             res.sendStatus(204);
         } else {
             res.sendStatus(401);
@@ -124,7 +127,7 @@ export class AuthController {
     async createNewPassword (req: Request, res: Response)  {
         const {newPassword, recoveryCode} = req.body
 
-        const result = await usersService.findUserRecoveryCodeAndChangeNewPassword(newPassword, recoveryCode)
+        const result = await this.usersService.findUserRecoveryCodeAndChangeNewPassword(newPassword, recoveryCode)
 
         if (!result) return res.status(400).send({
             errorsMessages: [{
