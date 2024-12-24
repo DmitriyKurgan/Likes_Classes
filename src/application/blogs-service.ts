@@ -7,9 +7,6 @@ import {inject} from "inversify";
 export const blogs = [] as BlogViewModel[]
 @injectable()
 export class BlogsService {
-
-    blogsRepository: BlogsRepository
-
     constructor(
         @inject(BlogsRepository) protected blogsRepository: BlogsRepository
     ) {

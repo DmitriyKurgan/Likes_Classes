@@ -9,8 +9,6 @@ import {posts, PostsService} from "../application/posts-service";
 import {inject} from "inversify/lib/esm";
 
 export class BlogsController {
-    private blogsService: BlogsService
-    private postsService: PostsService
     constructor(
         @inject(BlogsService) protected blogsService: BlogsService,
         @inject(PostsService) protected postsService: PostsService,

@@ -11,12 +11,8 @@ import {CommentViewModel} from "../models/view/CommentViewModel";
 import {comments, CommentsService} from "../application/comments-service";
 import {UsersRepository} from "../infrastructure/repositories/users-repository";
 import {inject} from "inversify/lib/esm";
-import {BlogsService} from "../application/blogs-service";
 
 export class PostsController {
-    private postsService: PostsService
-    private usersRepository: UsersRepository
-    private commentsService: CommentsService
     constructor(
         @inject(PostsService) protected postsService: PostsService,
         @inject(UsersRepository) protected usersRepository: UsersRepository,

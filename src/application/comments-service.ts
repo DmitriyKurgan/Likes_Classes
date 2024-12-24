@@ -8,7 +8,6 @@ import {inject, injectable} from "inversify/lib/esm";
 export const comments = [] as CommentViewModel[]
 @injectable()
 export class CommentsService {
-    commentsRepository: CommentsRepository
     constructor(
         @inject(CommentsRepository) protected commentsRepository: CommentsRepository
     ) {}

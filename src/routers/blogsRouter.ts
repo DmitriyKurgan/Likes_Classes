@@ -5,7 +5,7 @@ import {validateBlogsRequestsInputParams} from "../middlewares/validations/input
 import {validatePostsRequestsInputParams} from "../middlewares/validations/input/post-input-validation";
 import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
 import {container} from "../composition-root";
-import {BlogsController} from "../controllers/blogsController";
+import {BlogsController} from "../controllers/BlogsController";
 
 export const blogsRouter = Router({})
 

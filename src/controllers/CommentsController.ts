@@ -5,9 +5,6 @@ import {commentsQueryRepository} from "../infrastructure/repositories/query-repo
 import {CodeResponsesEnum} from "../utils/utils";
 import {inject} from "inversify/lib/esm";
 export class CommentsController {
-
-    private commentsService: CommentsService
-
     constructor(
         @inject(CommentsService) protected commentsService: CommentsService,
     ) {}

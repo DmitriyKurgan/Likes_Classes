@@ -6,8 +6,6 @@ import {UserViewModel} from "../models/view/UserViewModel";
 import {inject} from "inversify/lib/esm";
 
 export class UsersController {
-    private usersService: UsersService
-
     constructor(
         @inject(UsersService) protected usersService: UsersService,
     ) {}

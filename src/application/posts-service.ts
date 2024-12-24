@@ -7,9 +7,8 @@ import {BlogsRepository} from "../infrastructure/repositories/blogs-repository";
 export const posts = [] as PostViewModel[]
 @injectable()
 export class PostsService {
-    postsRepository: PostsRepository
     constructor(
-        @inject(PostsRepository) protected postsRepository: BlogsRepository
+        @inject(PostsRepository) protected postsRepository: PostsRepository
     ) {}
     async createPost(body:PostDBModel, blogName:string,blogID:string):Promise<PostViewModel | null> {
 

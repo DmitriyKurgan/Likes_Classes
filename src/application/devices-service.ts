@@ -7,7 +7,6 @@ import {inject, injectable} from "inversify/lib/esm";
 export const devices = [] as DeviceViewModel[]
 @injectable()
 export class SecurityDevicesService {
-    private securityDevicesRepository: SecurityDevicesRepository
     constructor(
         @inject(SecurityDevicesRepository) protected securityDevicesRepository: SecurityDevicesRepository
     ) {}

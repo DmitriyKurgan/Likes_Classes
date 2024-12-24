@@ -10,15 +10,15 @@ import { UsersService } from "./application/users-service";
 import { UsersRepository } from "./infrastructure/repositories/users-repository";
 import { AuthService } from "./application/auth-service";
 import { Container } from "inversify";
-import {UsersController} from "./controllers/usersController";
-import {SecurityDevicesController} from "./controllers/securityDevicesController";
-import {CommentsController} from "./controllers/commentsController";
+import {UsersController} from "./controllers/UsersController";
+import {SecurityDevicesController} from "./controllers/SecurityDevicesController";
+import {CommentsController} from "./controllers/CommentsController";
 import {CommentsRepository} from "./infrastructure/repositories/comments-repository";
 import {SecurityDevicesRepository} from "./infrastructure/repositories/devices-repository";
 import {SecurityDevicesService} from "./application/devices-service";
 import {TestingController} from "./controllers/TestingController";
 import {JwtService} from "./application/jwt-service";
-import {AuthController} from "./controllers/authController";
+import {AuthController} from "./controllers/AuthController";
 
 export const container = new Container()
 

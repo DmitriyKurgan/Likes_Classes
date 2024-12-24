@@ -7,7 +7,7 @@ import {
     validationEmailConfirm,
     validationEmailResend,
 } from "../middlewares/email-and-password-validation";
-import {AuthController} from "../controllers/authController";
+import {AuthController} from "../controllers/AuthController";
 import {validateBearerAuthorization} from "../middlewares/auth/auth-bearer";
 import {validateUsersRequestsInputParams} from "../middlewares/validations/input/user-input-validation";
 import {requestAttemptsMiddleware} from "../middlewares/raze-limiter";
@@ -15,10 +15,11 @@ import {validationRefreshToken} from "../middlewares/auth/refresh-token";
 import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
 import {validateAuthRequestsInputParams} from "../middlewares/validations/input/auth-input-validation";
 import {validationUserUnique} from "../middlewares/validations/find-by-id/user-validation";
+import {container} from "../composition-root";
 
 export const authRouter = Router({})
 
-const authController = new AuthController()
+const authController = container.resolve(AuthController)
 
 authRouter.post(
     '/login',

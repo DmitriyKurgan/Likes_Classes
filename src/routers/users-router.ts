@@ -1,13 +1,15 @@
 import {Router} from "express";
-import {UsersController} from "../controllers/usersController";
+import {UsersController} from "../controllers/UsersController";
 import {validateBasicAuthorization} from "../middlewares/auth/auth-basic";
 import {validateUserFindByParamId} from "../middlewares/validations/find-by-id/user-validation";
 import {validateUsersRequestsInputParams} from "../middlewares/validations/input/user-input-validation";
 import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
+import {container} from "../composition-root";
 
 export const usersRouter = Router({})
 
-const usersController = new UsersController()
+const usersController = container.resolve(UsersController)
+
 usersRouter.get(
     '/',
     validateBasicAuthorization,

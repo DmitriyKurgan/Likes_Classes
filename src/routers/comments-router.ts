@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {CommentsController} from "../controllers/commentsController";
+import {CommentsController} from "../controllers/CommentsController";
 import {validateBearerAuthorization} from "../middlewares/auth/auth-bearer";
 import {tokenParser} from "../middlewares/auth/token-parser";
 import {
@@ -11,10 +11,12 @@ import {
     validateCommentsLikesRequestsInputParams
 } from "../middlewares/validations/input/like-for-comment-input-validation";
 import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
+import {container} from "../composition-root";
 
 export const commentsRouter = Router({})
 
-const commentsController = new CommentsController()
+const commentsController = container.resolve(CommentsController)
+
 commentsRouter.get(
     '/:id',
     validationCommentsFindByParamId,

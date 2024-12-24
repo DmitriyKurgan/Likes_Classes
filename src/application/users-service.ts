@@ -10,7 +10,6 @@ import {inject, injectable} from "inversify/lib/esm";
 export const users = [] as UserViewModel[]
 @injectable()
 export class UsersService {
-    usersRepository: UsersRepository
     constructor(
         @inject(UsersRepository) protected usersRepository: UsersRepository
     ){}

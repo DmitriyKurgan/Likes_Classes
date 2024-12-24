@@ -12,20 +12,11 @@ import {SecurityDevicesService} from "../application/devices-service";
 import {container} from "../composition-root";
 import {JwtService} from "../application/jwt-service";
 import {inject} from "inversify/lib/esm";
-import {BlogsService} from "../application/blogs-service";
-import {PostsService} from "../application/posts-service";
-
-const jwtService = container.resolve(JwtService)
 
 export class AuthController {
-
-    private authService: AuthService
-    private usersService: UsersService
-    private usersRepository: UsersRepository
-    private securityDevicesService: SecurityDevicesService
-
     constructor(
         @inject(AuthService) protected authService: AuthService,
+        @inject(JwtService) protected jwtService: JwtService,
         @inject(UsersService) protected usersService: UsersService,
         @inject(SecurityDevicesService) protected securityDevicesService: SecurityDevicesService,
         @inject(UsersRepository) protected usersRepository: UsersRepository,
@@ -114,7 +105,7 @@ export class AuthController {
 
         const cookieRefreshToken = req.cookies.refreshToken!
 
-        const { deviceId } = await jwtService.verifyToken(cookieRefreshToken)
+        const { deviceId } = await this.jwtService.verifyToken(cookieRefreshToken)
 
         const clearTokensPair =  await tokensService.createNewBlacklistedRefreshToken(cookieRefreshToken);
 

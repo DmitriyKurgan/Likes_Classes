@@ -1,15 +1,17 @@
 import {Router} from "express";
-import {SecurityDevicesController} from "../controllers/securityDevicesController";
+import {SecurityDevicesController} from "../controllers/SecurityDevicesController";
 import {validateBearerAuthorization} from "../middlewares/auth/auth-bearer";
 import {
     validationDeviceOwner,
     validationDevicesFindByParamId
 } from "../middlewares/validations/find-by-id/device-validation";
 import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
+import {container} from "../composition-root";
 
 export const securityDevicesRouter = Router({});
 
-const securityDevicesController = new SecurityDevicesController()
+const securityDevicesController = container.resolve(SecurityDevicesController)
+
 securityDevicesRouter.get(
     '/',
     securityDevicesController.getAllUserDevices.bind(securityDevicesController)

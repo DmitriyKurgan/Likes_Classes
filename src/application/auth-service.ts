@@ -14,9 +14,6 @@ export const users = [] as UserViewModel[]
 
 @injectable()
 export class AuthService {
-    authRepository: AuthRepository
-    jwtService: JwtService
-    securityDevicesService: SecurityDevicesService
     constructor(
          @inject(AuthRepository) protected authRepository: AuthRepository,
          @inject(JwtService) protected jwtService: JwtService,

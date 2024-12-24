@@ -1,5 +1,4 @@
 import {Router} from "express";
-import {PostsController} from "../controllers/postsController";
 import {validateBasicAuthorization} from "../middlewares/auth/auth-basic";
 import {validateBearerAuthorization} from "../middlewares/auth/auth-bearer";
 import {validationPostFindByParamId} from "../middlewares/validations/find-by-id/post-validation";
@@ -9,10 +8,12 @@ import {validateErrorsMiddleware} from "../middlewares/general-errors-validator"
 import {
     validateBlogIdForPostsRequestsInputParams
 } from "../middlewares/validations/input/blog-id-for-post-creation-input-validation";
+import {container} from "../composition-root";
+import {PostsController} from "../controllers/PostsController";
 
 export const postsRouter = Router({})
 
-const postsController = new PostsController()
+const postsController = container.resolve(PostsController)
 
 postsRouter.get(
     '/',
