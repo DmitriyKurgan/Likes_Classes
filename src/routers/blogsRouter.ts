@@ -1,12 +1,10 @@
 import {Router} from "express";
-
-import {
-    validateAuthorization,
-    validateBlogsRequests,
-    validateErrorsMiddleware,
-    validatePostsRequests, validationBlogsFindByParamId
-} from "../middlewares/middlewares";
 import {BlogsController} from "../controllers/blogsController";
+import {validateBasicAuthorization} from "../middlewares/auth/auth-basic";
+import {validationBlogsFindByParamId} from "../middlewares/validations/find-by-id/blog-validation";
+import {validateBlogsRequestsInputParams} from "../middlewares/validations/input/blog-input-validation";
+import {validatePostsRequestsInputParams} from "../middlewares/validations/input/post-input-validation";
+import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
 
 export const blogsRouter = Router({})
 
@@ -30,32 +28,32 @@ blogsRouter.get(
 
 blogsRouter.post(
     '/',
-    validateAuthorization,
-    validateBlogsRequests,
+    validateBasicAuthorization,
+    validateBlogsRequestsInputParams,
     validateErrorsMiddleware,
     blogsController.createBlog.bind(blogsController)
 )
 
 blogsRouter.post(
     '/:id/posts',
-    validateAuthorization,
-    validatePostsRequests,
+    validateBasicAuthorization,
+    validatePostsRequestsInputParams,
     validateErrorsMiddleware,
     blogsController.createPostForBlog.bind(blogsController)
 )
 
 blogsRouter.put(
     '/:id',
-    validateAuthorization,
+    validateBasicAuthorization,
     validationBlogsFindByParamId,
-    validateBlogsRequests,
+    validateBlogsRequestsInputParams,
     validateErrorsMiddleware,
     blogsController.updateBlog.bind(blogsController)
 )
 
 blogsRouter.delete(
     '/:id',
-    validateAuthorization,
+    validateBasicAuthorization,
     validationBlogsFindByParamId,
     validateErrorsMiddleware,
     blogsController.deleteBlog.bind(blogsController)

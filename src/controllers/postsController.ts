@@ -1,15 +1,15 @@
-import {posts, PostsService} from "../services/posts-service";
+import {posts, PostsService} from "../application/posts-service";
 import {Request, Response} from "express";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
-import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
+import {postsQueryRepository} from "../infrastructure/repositories/query-repositories/posts-query-repository";
 import {PostDBModel} from "../models/database/PostDBModel";
-import {commentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
+import {commentsQueryRepository} from "../infrastructure/repositories/query-repositories/comments-query-repository";
 import {BlogViewModel} from "../models/view/BlogViewModel";
-import {blogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
+import {blogsQueryRepository} from "../infrastructure/repositories/query-repositories/blogs-query-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
 import {CommentViewModel} from "../models/view/CommentViewModel";
-import {comments, CommentsService} from "../services/comments-service";
-import {UsersRepository} from "../repositories/users-repository";
+import {comments, CommentsService} from "../application/comments-service";
+import {UsersRepository} from "../infrastructure/repositories/users-repository";
 
 export class PostsController {
     private postsService: PostsService

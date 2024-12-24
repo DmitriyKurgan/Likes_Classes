@@ -1,11 +1,14 @@
 import {Router} from "express";
-import {
-    authMiddleware,
-    validateAuthorization, validateBlogIdForPostsRequests, validateCommentsRequests,
-    validateErrorsMiddleware,
-    validatePostsRequests, validationPostsCreation
-} from "../middlewares/middlewares";
 import {PostsController} from "../controllers/postsController";
+import {validateBasicAuthorization} from "../middlewares/auth/auth-basic";
+import {validateBearerAuthorization} from "../middlewares/auth/auth-bearer";
+import {validationPostFindByParamId} from "../middlewares/validations/find-by-id/post-validation";
+import {validatePostsRequestsInputParams} from "../middlewares/validations/input/post-input-validation";
+import {validateCommentsRequestsInputParams} from "../middlewares/validations/input/comment-input-validation";
+import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
+import {
+    validateBlogIdForPostsRequestsInputParams
+} from "../middlewares/validations/input/blog-id-for-post-creation-input-validation";
 
 export const postsRouter = Router({})
 
@@ -23,25 +26,25 @@ postsRouter.get(
 
 postsRouter.get(
     '/:id/comments',
-    authMiddleware,
+    validateBearerAuthorization,
     validateErrorsMiddleware,
     postsController.getAllCommentsOfPost.bind(postsController)
 )
 
 postsRouter.post(
     '/',
-    validateAuthorization,
-    validatePostsRequests,
-    validateBlogIdForPostsRequests,
-    validationPostsCreation,
+    validateBasicAuthorization,
+    validatePostsRequestsInputParams,
+    validateBlogIdForPostsRequestsInputParams,
+    validationPostFindByParamId,
     validateErrorsMiddleware,
     postsController.createPost.bind(postsController)
 )
 
 postsRouter.post(
     '/:id/comments',
-    authMiddleware,
-    validateCommentsRequests,
+    validateBearerAuthorization,
+    validateCommentsRequestsInputParams,
     validateErrorsMiddleware,
     postsController.createCommentForPost.bind(postsController)
 )
@@ -49,17 +52,17 @@ postsRouter.post(
 
 postsRouter.put(
     '/:id',
-    validateAuthorization,
-    validatePostsRequests,
-    validateBlogIdForPostsRequests,
-    validationPostsCreation,
+    validateBasicAuthorization,
+    validatePostsRequestsInputParams,
+    validateBlogIdForPostsRequestsInputParams,
+    validationPostFindByParamId,
     validateErrorsMiddleware,
     postsController.updatePost.bind(postsController)
 )
 
 postsRouter.delete(
     '/:id',
-    validateAuthorization,
+    validateBasicAuthorization,
     validateErrorsMiddleware,
     postsController.deletePost.bind(postsController)
 )

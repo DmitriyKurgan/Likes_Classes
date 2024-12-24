@@ -9,19 +9,22 @@ import {testingRouter} from "./routers/testing-router";
 import cookieParser from "cookie-parser";
 import {securityDevicesRouter} from "./routers/securityDevicesRouter";
 
-export const app = express();
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use(cookieParser());
-app.set('trust proxy', true);
-const parserMiddleware = bodyParser({});
+export const app = express()
 
-app.use(parserMiddleware);
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
 
-app.use('/blogs', blogsRouter);
-app.use('/posts', postsRouter);
-app.use('/users', usersRouter);
-app.use('/auth', authRouter);
-app.use('/comments', commentsRouter);
-app.use('/security/devices', securityDevicesRouter);
-app.use('/testing/all-data', testingRouter);
+app.set('trust proxy', true)
+
+const parserMiddleware = bodyParser({})
+
+app.use(parserMiddleware)
+
+app.use('/blogs', blogsRouter)
+app.use('/posts', postsRouter)
+app.use('/users', usersRouter)
+app.use('/auth', authRouter)
+app.use('/comments', commentsRouter)
+app.use('/security/devices', securityDevicesRouter)
+app.use('/testing/all-data', testingRouter)

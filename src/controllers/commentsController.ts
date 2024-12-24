@@ -1,7 +1,7 @@
-import {CommentsService} from "../services/comments-service";
+import {CommentsService} from "../application/comments-service";
 import {Request, Response} from "express";
 import {CommentViewModel} from "../models/view/CommentViewModel";
-import {commentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
+import {commentsQueryRepository} from "../infrastructure/repositories/query-repositories/comments-query-repository";
 import {CodeResponsesEnum} from "../utils/utils";
 
 export class CommentsController {

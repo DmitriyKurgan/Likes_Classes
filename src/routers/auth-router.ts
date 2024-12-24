@@ -1,17 +1,20 @@
 import { Router } from "express";
 import {
-    authMiddleware, requestAttemptsMiddleware,
-    validateAuthRequests, validateEmail,
+    validateEmail,
     validateEmailResendingRequests,
-    validateErrorsMiddleware, validateNewPassword,
+    validateNewPassword,
     validateRegistrationConfirmationRequests,
-    validateUsersRequests,
     validationEmailConfirm,
     validationEmailResend,
-    validationRefreshToken,
-    validationUserUnique
-} from "../middlewares/middlewares";
+} from "../middlewares/email-and-password-validation";
 import {AuthController} from "../controllers/authController";
+import {validateBearerAuthorization} from "../middlewares/auth/auth-bearer";
+import {validateUsersRequestsInputParams} from "../middlewares/validations/input/user-input-validation";
+import {requestAttemptsMiddleware} from "../middlewares/raze-limiter";
+import {validationRefreshToken} from "../middlewares/auth/refresh-token";
+import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
+import {validateAuthRequestsInputParams} from "../middlewares/validations/input/auth-input-validation";
+import {validationUserUnique} from "../middlewares/validations/find-by-id/user-validation";
 
 export const authRouter = Router({})
 
@@ -19,7 +22,7 @@ const authController = new AuthController()
 
 authRouter.post(
     '/login',
-    validateAuthRequests,
+    validateAuthRequestsInputParams,
     requestAttemptsMiddleware,
     validateErrorsMiddleware,
     authController.loginUser.bind(authController)
@@ -32,7 +35,7 @@ authRouter.post(
 )
 
 authRouter.post('/registration',
-    validateUsersRequests,
+    validateUsersRequestsInputParams,
     validationUserUnique("email"),
     validationUserUnique("login"),
     requestAttemptsMiddleware,
@@ -58,7 +61,7 @@ authRouter.post('/registration-email-resending',
 
 authRouter.get(
     '/me',
-    authMiddleware,
+    validateBearerAuthorization,
     authController.me.bind(authController)
 )
 

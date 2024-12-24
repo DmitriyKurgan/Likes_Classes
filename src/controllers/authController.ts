@@ -1,15 +1,15 @@
 import {Request, Response} from "express";
 import {CodeResponsesEnum} from "../utils/utils";
 import {jwtService} from "../application/jwt-service";
-import {AuthService} from "../services/auth-service";
-import {emailService} from "../services/email-service";
-import {tokensService} from "../services/tokens-service";
-import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
+import {AuthService} from "../application/auth-service";
+import {emailService} from "../application/email-service";
+import {tokensService} from "../application/tokens-service";
+import {usersQueryRepository} from "../infrastructure/repositories/query-repositories/users-query-repository";
 import {randomUUID, UUID} from "crypto";
 import {UserViewModel} from "../models/view/UserViewModel";
-import {UsersService} from "../services/users-service";
-import {UsersRepository} from "../repositories/users-repository";
-import {SecurityDevicesService} from "../services/devices-service";
+import {UsersService} from "../application/users-service";
+import {UsersRepository} from "../infrastructure/repositories/users-repository";
+import {SecurityDevicesService} from "../application/devices-service";
 
 export class AuthController {
     private authService: AuthService

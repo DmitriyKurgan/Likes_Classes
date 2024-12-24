@@ -1,7 +1,7 @@
-import {SecurityDevicesService} from "../services/devices-service";
+import {SecurityDevicesService} from "../application/devices-service";
 import {Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
-import {devicesQueryRepository} from "../repositories/query-repositories/devices-query-repository";
+import {devicesQueryRepository} from "../infrastructure/repositories/query-repositories/devices-query-repository";
 import {CodeResponsesEnum} from "../utils/utils";
 
 export class SecurityDevicesController {

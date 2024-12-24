@@ -1,16 +1,16 @@
 import {Router} from "express";
-import {
-    validateAuthorization,
-    validateErrorsMiddleware, validateUserFindByParamId, validateUsersRequests,
-} from "../middlewares/middlewares";
 import {UsersController} from "../controllers/usersController";
+import {validateBasicAuthorization} from "../middlewares/auth/auth-basic";
+import {validateUserFindByParamId} from "../middlewares/validations/find-by-id/user-validation";
+import {validateUsersRequestsInputParams} from "../middlewares/validations/input/user-input-validation";
+import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
 
 export const usersRouter = Router({})
 
 const usersController = new UsersController()
 usersRouter.get(
     '/',
-    validateAuthorization,
+    validateBasicAuthorization,
     validateErrorsMiddleware,
     usersController.getUsers.bind(usersController)
 )
@@ -18,15 +18,15 @@ usersRouter.get(
 
 usersRouter.post(
     '/',
-    validateAuthorization,
-    validateUsersRequests,
+    validateBasicAuthorization,
+    validateUsersRequestsInputParams,
     validateErrorsMiddleware,
     usersController.createUser.bind(usersController)
 )
 
 usersRouter.delete(
     '/:id',
-    validateAuthorization,
+    validateBasicAuthorization,
     validateUserFindByParamId,
     validateErrorsMiddleware,
     usersController.deleteUser.bind(usersController)

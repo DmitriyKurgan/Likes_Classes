@@ -1,11 +1,11 @@
-import {blogs, BlogsService} from "../services/blogs-service";
+import {blogs, BlogsService} from "../application/blogs-service";
 import {Request, Response} from "express";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
-import {blogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
+import {blogsQueryRepository} from "../infrastructure/repositories/query-repositories/blogs-query-repository";
 import {BlogViewModel} from "../models/view/BlogViewModel";
-import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
+import {postsQueryRepository} from "../infrastructure/repositories/query-repositories/posts-query-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
-import {posts, PostsService} from "../services/posts-service";
+import {posts, PostsService} from "../application/posts-service";
 
 export class BlogsController {
     private blogsService: BlogsService

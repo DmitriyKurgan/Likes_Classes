@@ -1,9 +1,11 @@
 import {Router} from "express";
-import {
-    authMiddleware,
-    validateErrorsMiddleware, validationDeviceOwner, validationDevicesFindByParamId,
-} from "../middlewares/middlewares";
 import {SecurityDevicesController} from "../controllers/securityDevicesController";
+import {validateBearerAuthorization} from "../middlewares/auth/auth-bearer";
+import {
+    validationDeviceOwner,
+    validationDevicesFindByParamId
+} from "../middlewares/validations/find-by-id/device-validation";
+import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
 
 export const securityDevicesRouter = Router({});
 
@@ -25,7 +27,7 @@ securityDevicesRouter.delete(
 
 securityDevicesRouter.delete(
     '/',
-    authMiddleware,
+    validateBearerAuthorization,
     validateErrorsMiddleware,
     securityDevicesController.deleteAllOldDevices.bind(securityDevicesController)
 )

@@ -1,7 +1,7 @@
-import {users, UsersService} from "../services/users-service";
+import {users, UsersService} from "../application/users-service";
 import {Request, Response} from "express";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
-import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
+import {usersQueryRepository} from "../infrastructure/repositories/query-repositories/users-query-repository";
 import {UserViewModel} from "../models/view/UserViewModel";
 export class UsersController {
     private usersService: UsersService

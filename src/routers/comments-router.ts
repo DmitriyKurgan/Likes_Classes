@@ -1,11 +1,16 @@
 import {Router} from "express";
-import {
-    authMiddleware, tokenParser, validateCommentsLikesRequests,
-    validateCommentsRequests,
-    validateErrorsMiddleware, validationCommentOwner,
-    validationCommentsFindByParamId,
-} from "../middlewares/middlewares";
 import {CommentsController} from "../controllers/commentsController";
+import {validateBearerAuthorization} from "../middlewares/auth/auth-bearer";
+import {tokenParser} from "../middlewares/auth/token-parser";
+import {
+    validationCommentOwner,
+    validationCommentsFindByParamId
+} from "../middlewares/validations/find-by-id/comment-validation";
+import {validateCommentsRequestsInputParams} from "../middlewares/validations/input/comment-input-validation";
+import {
+    validateCommentsLikesRequestsInputParams
+} from "../middlewares/validations/input/like-for-comment-input-validation";
+import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
 
 export const commentsRouter = Router({})
 
@@ -22,8 +27,8 @@ commentsRouter.get(
 commentsRouter.put(
     '/:id',
     validationCommentsFindByParamId,
-    authMiddleware,
-    validateCommentsRequests,
+    validateBearerAuthorization,
+    validateCommentsRequestsInputParams,
     validateErrorsMiddleware,
     validationCommentOwner,
     commentsController.updateComment.bind(commentsController)
@@ -32,8 +37,8 @@ commentsRouter.put(
 commentsRouter.put(
     '/:id/like-status',
     validationCommentsFindByParamId,
-    authMiddleware,
-    validateCommentsLikesRequests as any,
+    validateBearerAuthorization,
+    validateCommentsLikesRequestsInputParams,
     validateErrorsMiddleware,
     commentsController.updateLikeStatus.bind(commentsController)
 )
@@ -41,7 +46,7 @@ commentsRouter.put(
 commentsRouter.delete(
     '/:id',
     validationCommentsFindByParamId,
-    authMiddleware,
+    validateBearerAuthorization,
     validateErrorsMiddleware,
     validationCommentOwner,
     commentsController.deleteComment.bind(commentsController)

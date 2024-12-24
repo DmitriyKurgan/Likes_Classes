@@ -4,7 +4,7 @@ import {
     AttemptsModel,
     BlogModel, CommentsModel, PostsModel, TokensModel,
     UsersModel, UsersSessionModel
-} from "../repositories/db";
+} from "../infrastructure/repositories/db";
 export const testingRouter = Router({})
 
 testingRouter.delete('/', async (req:Request, res: Response) => {

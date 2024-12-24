@@ -1,6 +1,6 @@
 import {ObjectId, WithId} from "mongodb";
-import {BlogModel, CommentsModel, PostsModel, UsersModel} from "../repositories/db";
-import {CommentMapper} from "../repositories/query-repositories/comments-query-repository";
+import {BlogModel, CommentsModel, PostsModel, UsersModel} from "../infrastructure/repositories/db";
+import {CommentMapper} from "../infrastructure/repositories/query-repositories/comments-query-repository";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {PostDBModel} from "../models/database/PostDBModel";
 import {BlogDBModel} from "../models/database/BlogDBModel";
