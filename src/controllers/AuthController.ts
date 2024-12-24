@@ -9,9 +9,8 @@ import {UserViewModel} from "../models/view/UserViewModel";
 import {UsersService} from "../application/users-service";
 import {UsersRepository} from "../infrastructure/repositories/users-repository";
 import {SecurityDevicesService} from "../application/devices-service";
-import {container} from "../composition-root";
 import {JwtService} from "../application/jwt-service";
-import {inject} from "inversify/lib/esm";
+import {inject} from "inversify";
 
 export class AuthController {
     constructor(

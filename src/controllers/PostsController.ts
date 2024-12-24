@@ -10,7 +10,7 @@ import {PostViewModel} from "../models/view/PostViewModel";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {comments, CommentsService} from "../application/comments-service";
 import {UsersRepository} from "../infrastructure/repositories/users-repository";
-import {inject} from "inversify/lib/esm";
+import {inject} from "inversify";
 
 export class PostsController {
     constructor(

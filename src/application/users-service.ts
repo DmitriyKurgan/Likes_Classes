@@ -1,11 +1,11 @@
 import {UsersRepository} from "../infrastructure/repositories/users-repository";
 import bcrypt from 'bcrypt'
 import {ObjectId} from "mongodb";
-import {v4 as uuidv4} from "uuid";
-import {add} from "date-fns/add";
+import add from "date-fns/add"
 import {UserDBModel} from "../models/database/UserDBModel";
 import {UserViewModel} from "../models/view/UserViewModel";
-import {inject, injectable} from "inversify/lib/esm";
+import {inject, injectable} from "inversify";
+import {randomUUID} from "crypto";
 
 export const users = [] as UserViewModel[]
 @injectable()
@@ -29,7 +29,7 @@ export class UsersService {
                 isMembership: false
             },
             {
-                confirmationCode:uuidv4(),
+                confirmationCode: randomUUID(),
                 expirationDate:add(new Date(), {
                     hours: 3,
                     minutes: 10

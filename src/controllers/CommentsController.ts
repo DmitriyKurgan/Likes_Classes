@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {commentsQueryRepository} from "../infrastructure/repositories/query-repositories/comments-query-repository";
 import {CodeResponsesEnum} from "../utils/utils";
-import {inject} from "inversify/lib/esm";
+import {inject} from "inversify";
 export class CommentsController {
     constructor(
         @inject(CommentsService) protected commentsService: CommentsService,

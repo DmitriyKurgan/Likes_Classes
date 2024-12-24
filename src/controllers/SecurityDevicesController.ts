@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {devicesQueryRepository} from "../infrastructure/repositories/query-repositories/devices-query-repository";
 import {CodeResponsesEnum} from "../utils/utils";
 import {JwtService} from "../application/jwt-service";
-import {inject} from "inversify/lib/esm";
+import {inject} from "inversify";
 export class SecurityDevicesController {
     constructor(
         @inject(SecurityDevicesService) protected securityDevicesService: SecurityDevicesService,

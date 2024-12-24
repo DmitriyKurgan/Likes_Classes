@@ -3,7 +3,7 @@ import {CommentDBModel} from "../models/database/CommentDBModel";
 import {ObjectId, UpdateResult} from "mongodb";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {commentsQueryRepository} from "../infrastructure/repositories/query-repositories/comments-query-repository";
-import {inject, injectable} from "inversify/lib/esm";
+import {inject, injectable} from "inversify";
 
 export const comments = [] as CommentViewModel[]
 @injectable()

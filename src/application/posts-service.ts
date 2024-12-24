@@ -2,8 +2,7 @@ import {PostsRepository} from "../infrastructure/repositories/posts-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
 import {PostDBModel} from "../models/database/PostDBModel";
 import {ObjectId} from "mongodb";
-import {inject, injectable} from "inversify/lib/esm";
-import {BlogsRepository} from "../infrastructure/repositories/blogs-repository";
+import {inject, injectable} from "inversify";
 export const posts = [] as PostViewModel[]
 @injectable()
 export class PostsService {

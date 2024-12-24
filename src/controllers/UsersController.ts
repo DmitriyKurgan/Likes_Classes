@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
 import {usersQueryRepository} from "../infrastructure/repositories/query-repositories/users-query-repository";
 import {UserViewModel} from "../models/view/UserViewModel";
-import {inject} from "inversify/lib/esm";
+import {inject} from "inversify";
 
 export class UsersController {
     constructor(

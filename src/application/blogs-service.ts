@@ -2,7 +2,7 @@ import {BlogsRepository} from "../infrastructure/repositories/blogs-repository";
 import {BlogDBModel} from "../models/database/BlogDBModel";
 import {ObjectId} from "mongodb";
 import {BlogViewModel} from "../models/view/BlogViewModel";
-import {injectable} from "inversify/lib/esm";
+import {injectable} from "inversify";
 import {inject} from "inversify";
 export const blogs = [] as BlogViewModel[]
 @injectable()
