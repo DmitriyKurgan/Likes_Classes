@@ -1,6 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import {CodeResponsesEnum} from "../../utils/utils";
-import {jwtService} from "../../application/jwt-service";
+import {container} from "../../composition-root";
+import {JwtService} from "../../application/jwt-service";
+
+const jwtService = container.resolve(JwtService)
 
 export const validateBearerAuthorization = async (req: Request, res: Response, next: NextFunction)=> {
 

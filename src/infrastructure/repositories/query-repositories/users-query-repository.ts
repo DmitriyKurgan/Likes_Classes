@@ -1,7 +1,6 @@
 import {ObjectId} from "mongodb";
 import {getUsersFromDB} from "../../../utils/utils";
 import {UsersModel} from "../db";
-import {UserViewModel} from "../../../models/view/UserViewModel";
 import {UserDBModel} from "../../../models/database/UserDBModel";import { HydratedDocument } from "mongoose";
 
 export const UserMapper = (user : UserDBModel) : any => {
@@ -11,15 +10,6 @@ export const UserMapper = (user : UserDBModel) : any => {
         emailConfirmation:{...user.emailConfirmation},
     }
 }
-export const UserSimpleMapper = (user : UserDBModel):UserViewModel =>{
-    return {
-        id: user._id.toString(),
-        email:user.accountData.email,
-        login:user.accountData.userName,
-        createdAt:user.accountData.createdAt,
-    }
-}
-
 export const usersQueryRepository = {
     async getAllUsers(query: any): Promise<any | { error: string }> {
         return getUsersFromDB(query);

@@ -1,6 +1,5 @@
 import {Request, Response} from "express";
 import {CodeResponsesEnum} from "../utils/utils";
-import {jwtService} from "../application/jwt-service";
 import {AuthService} from "../application/auth-service";
 import {emailService} from "../application/email-service";
 import {tokensService} from "../application/tokens-service";
@@ -10,17 +9,28 @@ import {UserViewModel} from "../models/view/UserViewModel";
 import {UsersService} from "../application/users-service";
 import {UsersRepository} from "../infrastructure/repositories/users-repository";
 import {SecurityDevicesService} from "../application/devices-service";
+import {container} from "../composition-root";
+import {JwtService} from "../application/jwt-service";
+import {inject} from "inversify/lib/esm";
+import {BlogsService} from "../application/blogs-service";
+import {PostsService} from "../application/posts-service";
+
+const jwtService = container.resolve(JwtService)
 
 export class AuthController {
+
     private authService: AuthService
     private usersService: UsersService
     private usersRepository: UsersRepository
     private securityDevicesService: SecurityDevicesService
-    constructor() {
-        this.authService = new AuthService()
-        this.usersService = new UsersService()
-        this.usersRepository = new UsersRepository()
-        this.securityDevicesService = new SecurityDevicesService()}
+
+    constructor(
+        @inject(AuthService) protected authService: AuthService,
+        @inject(UsersService) protected usersService: UsersService,
+        @inject(SecurityDevicesService) protected securityDevicesService: SecurityDevicesService,
+        @inject(UsersRepository) protected usersRepository: UsersRepository,
+    ) {}
+
     async loginUser (req: Request, res: Response)  {
 
         const {loginOrEmail, password} = req.body
@@ -102,17 +112,16 @@ export class AuthController {
 
     async logoutUser (req: Request, res: Response) {
 
-        const cookieRefreshToken = req.cookies.refreshToken!;
-        const { deviceId } = await jwtService.verifyToken(
-        cookieRefreshToken
-        );
+        const cookieRefreshToken = req.cookies.refreshToken!
+
+        const { deviceId } = await jwtService.verifyToken(cookieRefreshToken)
 
         const clearTokensPair =  await tokensService.createNewBlacklistedRefreshToken(cookieRefreshToken);
 
         if (!clearTokensPair) return res.sendStatus(CodeResponsesEnum.Unauthorized_401)
 
         if (deviceId) {
-            await this.securityDevicesService.deleteDevice(deviceId);
+            await this.securityDevicesService.deleteDevice(deviceId)
             res.sendStatus(204);
         } else {
             res.sendStatus(401);

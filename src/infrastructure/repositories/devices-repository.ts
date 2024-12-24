@@ -1,9 +1,11 @@
 import {DeviceViewModel} from "../../models/view/DeviceViewModel";
-import {UsersSessionModel} from "./db";
+import {UsersModel, UsersSessionModel} from "./db";
 import {DeleteResult} from "mongodb";
+import {DeviceDBModel} from "../../models/database/DeviceDBModel";
+import {injectable} from "inversify";
 
 export const devices = [] as DeviceViewModel[]
-
+@injectable()
 export class SecurityDevicesRepository {
     async createDevice(session:DeviceViewModel){
         return UsersSessionModel.create(session)
@@ -34,5 +36,10 @@ export class SecurityDevicesRepository {
     async findDeviceById(deviceID:string){
         const result: DeviceViewModel | null = await UsersSessionModel.findOne({deviceId:deviceID})
         return result
+    }
+
+    async deleteAll(): Promise<boolean> {
+        await UsersSessionModel.deleteMany({})
+        return (await UsersSessionModel.countDocuments()) === 0
     }
 }

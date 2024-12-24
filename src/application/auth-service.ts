@@ -4,36 +4,36 @@ import {AuthRepository} from "../infrastructure/repositories/auth-repository";
 import {authQueryRepository} from "../infrastructure/repositories/query-repositories/auth-query-repository";
 import {randomUUID} from "crypto";
 import {emailService} from "./email-service";
-import {jwtService} from "./jwt-service";
 import {tokensService} from "./tokens-service";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {UserViewModel} from "../models/view/UserViewModel";
 import { inject, injectable } from "inversify";
 import {SecurityDevicesService} from "./devices-service";
+import {JwtService} from "./jwt-service";
 export const users = [] as UserViewModel[]
 
+@injectable()
 export class AuthService {
     authRepository: AuthRepository
+    jwtService: JwtService
     securityDevicesService: SecurityDevicesService
     constructor(
-        // @inject(AuthService) protected authService: AuthService,
-        // @inject() protected usersRepository: UsersRepository
-    ) {
-        this.authRepository = new AuthRepository()
-        this.securityDevicesService = new SecurityDevicesService()
-    }
+         @inject(AuthRepository) protected authRepository: AuthRepository,
+         @inject(JwtService) protected jwtService: JwtService,
+         @inject(SecurityDevicesService) protected securityDevicesService: SecurityDevicesService
+    ) {}
     async loginUser (user: UserDBModel & {id:string} | any, deviceId: string, ip: string, deviceTitle: string): Promise<TokenType> {
-        const {refreshToken, accessToken} = await jwtService.createJWT(user, deviceId);
-        const lastActiveDate = jwtService.getLastActiveDateFromToken(refreshToken);
+        const {refreshToken, accessToken} = await this.jwtService.createJWT(user, deviceId);
+        const lastActiveDate = this.jwtService.getLastActiveDateFromToken(refreshToken);
         const session = await this.securityDevicesService.createDevice(user.id, ip, deviceTitle , lastActiveDate, deviceId)
         return {refreshToken, accessToken}
     }
     async refreshToken (oldRefreshToken: string, user: any, deviceId: string, ip: string): Promise<TokenType> {
 
-        const {refreshToken, accessToken} = await jwtService.createJWT(user, deviceId);
+        const {refreshToken, accessToken} = await this.jwtService.createJWT(user, deviceId);
 
         await tokensService.createNewBlacklistedRefreshToken(oldRefreshToken);
-        const newRefreshTokenObj = await jwtService.verifyToken(
+        const newRefreshTokenObj = await this.jwtService.verifyToken(
             refreshToken
         );
 

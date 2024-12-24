@@ -3,14 +3,15 @@ import {CommentDBModel} from "../models/database/CommentDBModel";
 import {ObjectId, UpdateResult} from "mongodb";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {commentsQueryRepository} from "../infrastructure/repositories/query-repositories/comments-query-repository";
+import {inject, injectable} from "inversify/lib/esm";
 
 export const comments = [] as CommentViewModel[]
-
+@injectable()
 export class CommentsService {
     commentsRepository: CommentsRepository
-    constructor() {
-        this.commentsRepository = new CommentsRepository()
-    }
+    constructor(
+        @inject(CommentsRepository) protected commentsRepository: CommentsRepository
+    ) {}
     async createComment(body: CommentDBModel, postID: string, userID:string, userLogin:string): Promise<CommentViewModel | null> {
         const newComment = new CommentDBModel(
             new ObjectId(),

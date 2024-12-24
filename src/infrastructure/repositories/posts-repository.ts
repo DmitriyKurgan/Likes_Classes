@@ -1,9 +1,10 @@
 import {ObjectId, UpdateResult, DeleteResult} from "mongodb";
-import {PostsModel} from "./db";
+import {BlogModel, PostsModel} from "./db";
 import {PostDBModel} from "../../models/database/PostDBModel";
 import {PostViewModel} from "../../models/view/PostViewModel";
+import {injectable} from "inversify";
 export const posts = [] as PostViewModel[]
-
+@injectable()
 export class PostsRepository {
     async createPost(newPost:PostDBModel):Promise<PostViewModel | null> {
         const post = await PostsModel.create(newPost)
@@ -39,5 +40,10 @@ export class PostsRepository {
         const result: DeleteResult = await PostsModel.deleteOne({_id: new ObjectId(postID)})
 
         return result.deletedCount === 1
+    }
+
+    async deleteAll(): Promise<boolean> {
+        await PostsModel.deleteMany({})
+        return (await PostsModel.countDocuments()) === 0
     }
 }

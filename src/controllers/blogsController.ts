@@ -6,14 +6,18 @@ import {BlogViewModel} from "../models/view/BlogViewModel";
 import {postsQueryRepository} from "../infrastructure/repositories/query-repositories/posts-query-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
 import {posts, PostsService} from "../application/posts-service";
+import {inject} from "inversify/lib/esm";
 
 export class BlogsController {
     private blogsService: BlogsService
     private postsService: PostsService
-    constructor() {
-        this.blogsService = new BlogsService()
-        this.postsService = new PostsService()
-    }
+    constructor(
+        @inject(BlogsService) protected blogsService: BlogsService,
+        @inject(PostsService) protected postsService: PostsService,
+        //@inject(BlogsQueryRepository)protected blogsQueryRepository: BlogsQueryRepository,
+        //@inject(PostsQueryRepository) protected postsQueryRepository: PostsQueryRepository
+    ) {}
+
     async getBlogs (req:Request, res:Response){
         const queryValues = getQueryValues({
             pageNumber: req.query.pageNumber,

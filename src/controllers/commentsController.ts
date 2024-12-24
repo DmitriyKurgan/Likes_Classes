@@ -3,12 +3,14 @@ import {Request, Response} from "express";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {commentsQueryRepository} from "../infrastructure/repositories/query-repositories/comments-query-repository";
 import {CodeResponsesEnum} from "../utils/utils";
-
+import {inject} from "inversify/lib/esm";
 export class CommentsController {
+
     private commentsService: CommentsService
-    constructor() {
-        this.commentsService = new CommentsService()
-    }
+
+    constructor(
+        @inject(CommentsService) protected commentsService: CommentsService,
+    ) {}
 
     async getComment (req: Request, res: Response)  {
 

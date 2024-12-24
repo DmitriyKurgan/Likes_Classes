@@ -1,9 +1,11 @@
-import {RecoveryCodeModel, UsersModel} from "./db";
+import {PostsModel, RecoveryCodeModel, UsersModel} from "./db";
 import {ObjectId, DeleteResult} from "mongodb";
 import {UserMapper,} from "./query-repositories/users-query-repository";
 import {UserDBModel} from "../../models/database/UserDBModel";
 import {UserViewModel} from "../../models/view/UserViewModel";
+import {injectable} from "inversify";
 
+@injectable()
 export class UsersRepository {
     async findByLoginOrEmail(loginOrEmail:string){
 
@@ -54,5 +56,10 @@ export class UsersRepository {
             )
 
         return updatedUser
+    }
+
+    async deleteAll(): Promise<boolean> {
+        await UsersModel.deleteMany({})
+        return (await UsersModel.countDocuments()) === 0
     }
 }

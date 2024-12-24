@@ -1,5 +1,8 @@
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../../application/jwt-service";
+import {container} from "../../composition-root";
+import {JwtService} from "../../application/jwt-service";
+
+const jwtService = container.resolve(JwtService)
 
 export const tokenParser = async (
     req: Request,

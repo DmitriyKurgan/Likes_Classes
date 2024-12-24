@@ -3,11 +3,14 @@ import {Request, Response} from "express";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
 import {usersQueryRepository} from "../infrastructure/repositories/query-repositories/users-query-repository";
 import {UserViewModel} from "../models/view/UserViewModel";
+import {inject} from "inversify/lib/esm";
+
 export class UsersController {
     private usersService: UsersService
-    constructor() {
-        this.usersService = new UsersService()
-    }
+
+    constructor(
+        @inject(UsersService) protected usersService: UsersService,
+    ) {}
 
     async getUsers (req: Request, res: Response){
 

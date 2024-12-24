@@ -1,10 +1,11 @@
 import {ObjectId, UpdateResult, DeleteResult} from "mongodb";
-import {CommentsModel} from "./db";
+import {CommentsModel, UsersModel} from "./db";
 import {CommentViewModel} from "../../models/view/CommentViewModel";
 import {CommentDBModel} from "../../models/database/CommentDBModel";
 import {commentsQueryRepository} from "./query-repositories/comments-query-repository";
+import {injectable} from "inversify";
 export const comments = [] as CommentViewModel[]
-
+@injectable()
 export class CommentsRepository {
     async createComment(newComment: CommentDBModel): Promise<CommentViewModel | null> {
 
@@ -196,7 +197,7 @@ export class CommentsRepository {
                     "likesInfo.dislikesCount": dislikesCount,
                 },
             }
-        );
+        )
         return result.matchedCount === 1
     }
 
@@ -234,4 +235,10 @@ export class CommentsRepository {
 
         return foundUser
     }
+
+    async deleteAll(): Promise<boolean> {
+        await CommentsModel.deleteMany({})
+        return (await CommentsModel.countDocuments()) === 0
+    }
+
 }

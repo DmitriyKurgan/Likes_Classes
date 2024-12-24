@@ -2,14 +2,15 @@ import {SecurityDevicesRepository} from "../infrastructure/repositories/devices-
 import {DeviceViewModel} from "../models/view/DeviceViewModel";
 import {DeviceDBModel} from "../models/database/DeviceDBModel";
 import {ObjectId} from "mongodb";
+import {inject, injectable} from "inversify/lib/esm";
 
 export const devices = [] as DeviceViewModel[]
-
+@injectable()
 export class SecurityDevicesService {
     private securityDevicesRepository: SecurityDevicesRepository
-    constructor() {
-        this.securityDevicesRepository = new SecurityDevicesRepository()
-    }
+    constructor(
+        @inject(SecurityDevicesRepository) protected securityDevicesRepository: SecurityDevicesRepository
+    ) {}
 
     async createDevice(userId: string, ip:string, title:string, lastActiveDate:string, deviceId:string ): Promise<any> {
 

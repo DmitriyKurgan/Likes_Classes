@@ -2,13 +2,15 @@ import {PostsRepository} from "../infrastructure/repositories/posts-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
 import {PostDBModel} from "../models/database/PostDBModel";
 import {ObjectId} from "mongodb";
+import {inject, injectable} from "inversify/lib/esm";
+import {BlogsRepository} from "../infrastructure/repositories/blogs-repository";
 export const posts = [] as PostViewModel[]
-
+@injectable()
 export class PostsService {
     postsRepository: PostsRepository
-    constructor() {
-        this.postsRepository = new PostsRepository()
-    }
+    constructor(
+        @inject(PostsRepository) protected postsRepository: BlogsRepository
+    ) {}
     async createPost(body:PostDBModel, blogName:string,blogID:string):Promise<PostViewModel | null> {
 
         const newPost = new PostDBModel(

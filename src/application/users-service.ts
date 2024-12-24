@@ -5,14 +5,15 @@ import {v4 as uuidv4} from "uuid";
 import {add} from "date-fns/add";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {UserViewModel} from "../models/view/UserViewModel";
+import {inject, injectable} from "inversify/lib/esm";
 
 export const users = [] as UserViewModel[]
-
+@injectable()
 export class UsersService {
     usersRepository: UsersRepository
-    constructor(){
-        this.usersRepository = new UsersRepository()
-    }
+    constructor(
+        @inject(UsersRepository) protected usersRepository: UsersRepository
+    ){}
     async createUser(login:string, email:string, password:string):Promise<UserViewModel | null> {
 
         const passwordSalt = await bcrypt.genSalt(10)

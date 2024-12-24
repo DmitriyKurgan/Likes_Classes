@@ -1,9 +1,11 @@
 import {param} from "express-validator";
 import {SecurityDevicesService} from "../../../application/devices-service";
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../../../application/jwt-service";
+import {JwtService} from "../../../application/jwt-service";
+import {container} from "../../../composition-root";
 
-const securityDevicesService = new SecurityDevicesService()
+const jwtService = container.resolve(JwtService)
+const securityDevicesService = container.resolve(SecurityDevicesService)
 export const validationDevicesFindByParamId = param("deviceId").custom(
 
     async (value) => {
@@ -31,7 +33,7 @@ export const validationDeviceOwner = async (
         return
     }
 
-    const cookieRefreshTokenObj = await jwtService.verifyToken(
+    const cookieRefreshTokenObj:any = await jwtService.verifyToken(
         cookieRefreshToken
     )
 

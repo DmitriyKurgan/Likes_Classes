@@ -1,14 +1,15 @@
 import {Router} from "express";
-import {BlogsController} from "../controllers/blogsController";
 import {validateBasicAuthorization} from "../middlewares/auth/auth-basic";
 import {validationBlogsFindByParamId} from "../middlewares/validations/find-by-id/blog-validation";
 import {validateBlogsRequestsInputParams} from "../middlewares/validations/input/blog-input-validation";
 import {validatePostsRequestsInputParams} from "../middlewares/validations/input/post-input-validation";
 import {validateErrorsMiddleware} from "../middlewares/general-errors-validator";
+import {container} from "../composition-root";
+import {BlogsController} from "../controllers/blogsController";
 
 export const blogsRouter = Router({})
 
-const blogsController = new BlogsController()
+const blogsController = container.resolve(BlogsController)
 
 blogsRouter.get(
     '/',

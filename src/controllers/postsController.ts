@@ -10,16 +10,18 @@ import {PostViewModel} from "../models/view/PostViewModel";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {comments, CommentsService} from "../application/comments-service";
 import {UsersRepository} from "../infrastructure/repositories/users-repository";
+import {inject} from "inversify/lib/esm";
+import {BlogsService} from "../application/blogs-service";
 
 export class PostsController {
     private postsService: PostsService
     private usersRepository: UsersRepository
     private commentsService: CommentsService
-    constructor() {
-        this.postsService = new PostsService()
-        this.usersRepository = new UsersRepository()
-        this.commentsService = new CommentsService()
-    }
+    constructor(
+        @inject(PostsService) protected postsService: PostsService,
+        @inject(UsersRepository) protected usersRepository: UsersRepository,
+        @inject(CommentsService) protected commentsService: CommentsService,
+    ) {}
 
     async getPosts (req:Request, res:Response){
 
