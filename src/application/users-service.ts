@@ -6,6 +6,7 @@ import {UserDBModel} from "../models/database/UserDBModel";
 import {UserViewModel} from "../models/view/UserViewModel";
 import {inject, injectable} from "inversify";
 import {randomUUID} from "crypto";
+import "reflect-metadata";
 
 export const users = [] as UserViewModel[]
 @injectable()

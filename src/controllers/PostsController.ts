@@ -10,8 +10,9 @@ import {PostViewModel} from "../models/view/PostViewModel";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {comments, CommentsService} from "../application/comments-service";
 import {UsersRepository} from "../infrastructure/repositories/users-repository";
-import {inject} from "inversify";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class PostsController {
     constructor(
         @inject(PostsService) protected postsService: PostsService,

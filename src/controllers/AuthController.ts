@@ -10,8 +10,9 @@ import {UsersService} from "../application/users-service";
 import {UsersRepository} from "../infrastructure/repositories/users-repository";
 import {SecurityDevicesService} from "../application/devices-service";
 import {JwtService} from "../application/jwt-service";
-import {inject} from "inversify";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class AuthController {
     constructor(
         @inject(AuthService) protected authService: AuthService,

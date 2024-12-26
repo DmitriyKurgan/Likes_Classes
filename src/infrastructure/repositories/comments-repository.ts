@@ -4,6 +4,7 @@ import {CommentViewModel} from "../../models/view/CommentViewModel";
 import {CommentDBModel} from "../../models/database/CommentDBModel";
 import {commentsQueryRepository} from "./query-repositories/comments-query-repository";
 import {injectable} from "inversify";
+import "reflect-metadata";
 export const comments = [] as CommentViewModel[]
 @injectable()
 export class CommentsRepository {

@@ -3,7 +3,9 @@ import {Request, Response} from "express";
 import {devicesQueryRepository} from "../infrastructure/repositories/query-repositories/devices-query-repository";
 import {CodeResponsesEnum} from "../utils/utils";
 import {JwtService} from "../application/jwt-service";
-import {inject} from "inversify";
+import {inject, injectable} from "inversify";
+
+@injectable()
 export class SecurityDevicesController {
     constructor(
         @inject(SecurityDevicesService) protected securityDevicesService: SecurityDevicesService,

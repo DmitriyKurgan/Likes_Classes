@@ -3,6 +3,7 @@ import {DeviceViewModel} from "../models/view/DeviceViewModel";
 import {DeviceDBModel} from "../models/database/DeviceDBModel";
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
+import "reflect-metadata";
 
 export const devices = [] as DeviceViewModel[]
 @injectable()

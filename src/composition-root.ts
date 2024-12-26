@@ -19,6 +19,7 @@ import {SecurityDevicesService} from "./application/devices-service";
 import {TestingController} from "./controllers/TestingController";
 import {JwtService} from "./application/jwt-service";
 import {AuthController} from "./controllers/AuthController";
+import {AuthRepository} from "./infrastructure/repositories/auth-repository";
 
 export const container = new Container()
 
@@ -39,6 +40,7 @@ container.bind(SecurityDevicesService).to(SecurityDevicesService)
 container.bind(CommentsService).to(CommentsService)
 
 container.bind(BlogsRepository).to(BlogsRepository)
+container.bind(AuthRepository).to(AuthRepository)
 container.bind(PostsRepository).to(PostsRepository)
 container.bind(UsersRepository).to(UsersRepository)
 container.bind(SecurityDevicesRepository).to(SecurityDevicesRepository)

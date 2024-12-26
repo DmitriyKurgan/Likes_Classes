@@ -6,8 +6,9 @@ import {BlogViewModel} from "../models/view/BlogViewModel";
 import {postsQueryRepository} from "../infrastructure/repositories/query-repositories/posts-query-repository";
 import {PostViewModel} from "../models/view/PostViewModel";
 import {posts, PostsService} from "../application/posts-service";
-import {inject} from "inversify";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class BlogsController {
     constructor(
         @inject(BlogsService) protected blogsService: BlogsService,

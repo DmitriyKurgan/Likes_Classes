@@ -3,8 +3,8 @@ import {Request, Response} from "express";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
 import {usersQueryRepository} from "../infrastructure/repositories/query-repositories/users-query-repository";
 import {UserViewModel} from "../models/view/UserViewModel";
-import {inject} from "inversify";
-
+import {inject, injectable} from "inversify";
+@injectable()
 export class UsersController {
     constructor(
         @inject(UsersService) protected usersService: UsersService,

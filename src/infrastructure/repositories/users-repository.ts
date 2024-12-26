@@ -4,6 +4,7 @@ import {UserMapper,} from "./query-repositories/users-query-repository";
 import {UserDBModel} from "../../models/database/UserDBModel";
 import {UserViewModel} from "../../models/view/UserViewModel";
 import {injectable} from "inversify";
+import "reflect-metadata";
 
 @injectable()
 export class UsersRepository {

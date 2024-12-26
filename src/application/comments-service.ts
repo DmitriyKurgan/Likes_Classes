@@ -4,6 +4,7 @@ import {ObjectId, UpdateResult} from "mongodb";
 import {CommentViewModel} from "../models/view/CommentViewModel";
 import {commentsQueryRepository} from "../infrastructure/repositories/query-repositories/comments-query-repository";
 import {inject, injectable} from "inversify";
+import "reflect-metadata";
 
 export const comments = [] as CommentViewModel[]
 @injectable()

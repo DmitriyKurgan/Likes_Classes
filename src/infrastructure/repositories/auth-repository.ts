@@ -1,7 +1,9 @@
 import {ObjectId, UpdateResult} from "mongodb";
 import {RecoveryCodeModel, UsersModel} from "./db";
 import {RecoveryCodeType} from "../../utils/types";
+import {injectable} from "inversify";
 
+@injectable()
 export class AuthRepository {
     async updateConfirmation(userID:string):Promise<boolean>{
         const result: UpdateResult = await UsersModel.updateOne({_id:new ObjectId(userID)},
