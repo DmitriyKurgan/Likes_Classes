@@ -1,12 +1,14 @@
 import {NextFunction, Request, Response} from "express";
 import {tokensQueryRepository} from "../../infrastructure/repositories/query-repositories/tokens-query-repository";
-import {usersQueryRepository} from "../../infrastructure/repositories/query-repositories/users-query-repository";
+import {UsersQueryRepository} from "../../infrastructure/repositories/query-repositories/users-query-repository";
 import {SecurityDevicesService} from "../../application/devices-service";
 import {container} from "../../composition-root";
 import {JwtService} from "../../application/jwt-service";
 
 const securityDevicesService = container.resolve(SecurityDevicesService)
 const jwtService = container.resolve(JwtService)
+const usersQueryRepository = container.resolve(UsersQueryRepository)
+
 export const validationRefreshToken = async (
     req: Request,
     res: Response,

@@ -2,7 +2,6 @@ import {DeviceViewModel} from "../../models/view/DeviceViewModel";
 import {UsersSessionModel} from "./db";
 import {DeleteResult} from "mongodb";
 import {injectable} from "inversify";
-import "reflect-metadata";
 
 export const devices = [] as DeviceViewModel[]
 @injectable()

@@ -1,11 +1,14 @@
-import {ObjectId, WithId} from "mongodb";
 import {BlogModel, CommentsModel, PostsModel, UsersModel} from "../infrastructure/repositories/db";
-import {CommentMapper} from "../infrastructure/repositories/query-repositories/comments-query-repository";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {PostDBModel} from "../models/database/PostDBModel";
 import {BlogDBModel} from "../models/database/BlogDBModel";
 import {CommentDBModel} from "../models/database/CommentDBModel";
+import {container} from "../composition-root";
+import {
+    CommentMapper,
+} from "../infrastructure/repositories/query-repositories/comments-query-repository";
 
+//const commentsQueryRepository = container.resolve(CommentsQueryRepository)
 export enum CodeResponsesEnum {
     Incorrect_values_400 = 400,
     Unauthorized_401= 401,

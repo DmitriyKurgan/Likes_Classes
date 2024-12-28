@@ -3,7 +3,6 @@ import {PostViewModel} from "../models/view/PostViewModel";
 import {PostDBModel} from "../models/database/PostDBModel";
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
-import "reflect-metadata";
 
 export const posts = [] as PostViewModel[]
 @injectable()

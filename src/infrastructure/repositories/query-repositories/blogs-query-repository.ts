@@ -4,7 +4,6 @@ import {BlogModel} from "../db";
 import {BlogViewModel} from "../../../models/view/BlogViewModel";
 import {BlogDBModel} from "../../../models/database/BlogDBModel";
 import {injectable} from "inversify";
-import "reflect-metadata";
 
 @injectable()
 export class BlogsQueryRepository {

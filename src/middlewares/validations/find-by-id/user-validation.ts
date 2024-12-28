@@ -1,6 +1,10 @@
 import {body, param} from "express-validator";
-import {usersQueryRepository} from "../../../infrastructure/repositories/query-repositories/users-query-repository";
-import {authQueryRepository} from "../../../infrastructure/repositories/query-repositories/auth-query-repository";
+import {UsersQueryRepository} from "../../../infrastructure/repositories/query-repositories/users-query-repository";
+import {container} from "../../../composition-root";
+import {AuthQueryRepository} from "../../../infrastructure/repositories/query-repositories/auth-query-repository";
+
+const authQueryRepository = container.resolve(AuthQueryRepository)
+const usersQueryRepository = container.resolve(UsersQueryRepository)
 
 export const validateUserFindByParamId = param("id").custom(
     async (value) => {

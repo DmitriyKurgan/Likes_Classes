@@ -1,10 +1,12 @@
 import {param} from "express-validator";
-import {
-    commentsQueryRepository
-} from "../../../infrastructure/repositories/query-repositories/comments-query-repository";
 import {NextFunction, Request, Response} from "express";
 import {CodeResponsesEnum} from "../../../utils/utils";
+import {container} from "../../../composition-root";
+import {
+    CommentsQueryRepository
+} from "../../../infrastructure/repositories/query-repositories/comments-query-repository";
 
+const commentsQueryRepository = container.resolve(CommentsQueryRepository)
 export const validationCommentsFindByParamId = param("id").custom(
     async (value) => {
 

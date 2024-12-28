@@ -4,7 +4,7 @@ import {PostsModel} from "../db";
 import {PostDBModel} from "../../../models/database/PostDBModel";
 import {HydratedDocument} from "mongoose";
 import { injectable } from "inversify";
-import "reflect-metadata";
+
 @injectable()
 export class PostsQueryRepository {
 

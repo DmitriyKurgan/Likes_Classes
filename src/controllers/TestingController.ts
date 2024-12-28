@@ -6,7 +6,6 @@ import { CommentsRepository } from "../infrastructure/repositories/comments-repo
 import { SecurityDevicesRepository } from "../infrastructure/repositories/devices-repository";
 import { inject, injectable } from "inversify";
 import {AttemptsModel, TokensModel} from "../infrastructure/repositories/db";
-import "reflect-metadata";
 
 @injectable()
 export class TestingController {

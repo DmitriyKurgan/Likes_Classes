@@ -1,13 +1,17 @@
-import {PostsModel, RecoveryCodeModel, UsersModel} from "./db";
+import {RecoveryCodeModel, UsersModel} from "./db";
 import {ObjectId, DeleteResult} from "mongodb";
-import {UserMapper,} from "./query-repositories/users-query-repository";
 import {UserDBModel} from "../../models/database/UserDBModel";
 import {UserViewModel} from "../../models/view/UserViewModel";
-import {injectable} from "inversify";
-import "reflect-metadata";
+import {inject, injectable} from "inversify";
+import {UsersQueryRepository} from "./query-repositories/users-query-repository";
 
 @injectable()
 export class UsersRepository {
+
+    constructor(
+        @inject(UsersQueryRepository) protected usersQueryRepository: UsersQueryRepository
+    ) {
+    }
     async findByLoginOrEmail(loginOrEmail:string){
 
         const user =
@@ -15,13 +19,13 @@ export class UsersRepository {
                 {"accountData.userName":loginOrEmail},
                 {"accountData.email":loginOrEmail}]
             })
-        return user ? UserMapper(user) : null
+        return user ? this.usersQueryRepository.UserMapper(user) : null
     }
     async findUserByID(userID:string){
         const user =
             await UsersModel.findOne({_id: new ObjectId(userID)})
 
-        return user ? UserMapper(user) : null
+        return user ? this.usersQueryRepository.UserMapper(user) : null
     }
 
     async createUser(newUser:UserDBModel):Promise<UserViewModel | null> {

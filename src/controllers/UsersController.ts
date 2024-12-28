@@ -1,13 +1,15 @@
 import {users, UsersService} from "../application/users-service";
 import {Request, Response} from "express";
 import {CodeResponsesEnum, getQueryValues} from "../utils/utils";
-import {usersQueryRepository} from "../infrastructure/repositories/query-repositories/users-query-repository";
+import {UsersQueryRepository} from "../infrastructure/repositories/query-repositories/users-query-repository";
 import {UserViewModel} from "../models/view/UserViewModel";
 import {inject, injectable} from "inversify";
+
 @injectable()
 export class UsersController {
     constructor(
         @inject(UsersService) protected usersService: UsersService,
+        @inject(UsersQueryRepository) protected usersQueryRepository: UsersQueryRepository,
     ) {}
 
     async getUsers (req: Request, res: Response){
@@ -20,7 +22,7 @@ export class UsersController {
             searchLoginTerm:req.query.searchLoginTerm,
             searchEmailTerm:req.query.searchEmailTerm})
 
-        const users = await usersQueryRepository.getAllUsers({...queryValues})
+        const users = await this.usersQueryRepository.getAllUsers({...queryValues})
 
         res.status(CodeResponsesEnum.OK_200).send(users)
     }

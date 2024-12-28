@@ -1,6 +1,6 @@
 import {SecurityDevicesService} from "../application/devices-service";
 import {Request, Response} from "express";
-import {devicesQueryRepository} from "../infrastructure/repositories/query-repositories/devices-query-repository";
+import {SecurityDevicesQueryRepository} from "../infrastructure/repositories/query-repositories/devices-query-repository";
 import {CodeResponsesEnum} from "../utils/utils";
 import {JwtService} from "../application/jwt-service";
 import {inject, injectable} from "inversify";
@@ -10,6 +10,7 @@ export class SecurityDevicesController {
     constructor(
         @inject(SecurityDevicesService) protected securityDevicesService: SecurityDevicesService,
         @inject(JwtService) protected jwtService: JwtService,
+        @inject(SecurityDevicesQueryRepository) protected securityDevicesQueryRepository: SecurityDevicesQueryRepository,
     ) {}
 
     async getAllUserDevices (req:Request, res:Response){
@@ -18,7 +19,7 @@ export class SecurityDevicesController {
         const userId = await this.jwtService.getUserIdByToken(cookieRefreshToken)
 
         if (userId) {
-            const foundDevices = await devicesQueryRepository.getAllDevices(
+            const foundDevices = await this.securityDevicesQueryRepository.getAllDevices(
                 userId
             )
             return res.status(CodeResponsesEnum.OK_200).send(foundDevices)

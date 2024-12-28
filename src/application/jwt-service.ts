@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import {settings} from "../settings";
 import {UserDBModel} from "../models/database/UserDBModel";
 import {injectable} from "inversify";
-import "reflect-metadata";
 
 @injectable()
 export class JwtService {

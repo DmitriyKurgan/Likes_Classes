@@ -3,7 +3,6 @@ import {BlogModel, PostsModel} from "./db";
 import {PostDBModel} from "../../models/database/PostDBModel";
 import {PostViewModel} from "../../models/view/PostViewModel";
 import {injectable} from "inversify";
-import "reflect-metadata";
 
 export const posts = [] as PostViewModel[]
 @injectable()
