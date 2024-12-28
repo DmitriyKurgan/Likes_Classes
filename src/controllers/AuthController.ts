@@ -3,7 +3,9 @@ import {CodeResponsesEnum} from "../utils/utils";
 import {AuthService} from "../application/auth-service";
 import {emailService} from "../application/email-service";
 import {tokensService} from "../application/tokens-service";
-import {usersQueryRepository} from "../infrastructure/repositories/query-repositories/users-query-repository";
+import {
+    UsersQueryRepository,
+} from "../infrastructure/repositories/query-repositories/users-query-repository";
 import {randomUUID, UUID} from "crypto";
 import {UserViewModel} from "../models/view/UserViewModel";
 import {UsersService} from "../application/users-service";
@@ -20,6 +22,7 @@ export class AuthController {
         @inject(UsersService) protected usersService: UsersService,
         @inject(SecurityDevicesService) protected securityDevicesService: SecurityDevicesService,
         @inject(UsersRepository) protected usersRepository: UsersRepository,
+        @inject(UsersQueryRepository) protected usersQueryRepository: UsersQueryRepository,
     ) {}
 
     async loginUser (req: Request, res: Response)  {
@@ -61,7 +64,7 @@ export class AuthController {
             return res.sendStatus(CodeResponsesEnum.Unauthorized_401);
         }
 
-        const user = await usersQueryRepository.findUserByID(userId as string);
+        const user = await this.usersQueryRepository.findUserByID(userId as string);
         const {refreshToken, accessToken} = await this.authService.refreshToken(req.cookies.refreshToken, user, deviceId, ip);
 
         res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true});

@@ -1,7 +1,6 @@
 import {RecoveryCodeType, TokenType} from "../utils/types";
 import bcrypt from 'bcrypt'
 import {AuthRepository} from "../infrastructure/repositories/auth-repository";
-import {authQueryRepository} from "../infrastructure/repositories/query-repositories/auth-query-repository";
 import {randomUUID} from "crypto";
 import {emailService} from "./email-service";
 import {tokensService} from "./tokens-service";
@@ -10,12 +9,14 @@ import {UserViewModel} from "../models/view/UserViewModel";
 import { inject, injectable } from "inversify";
 import {SecurityDevicesService} from "./devices-service";
 import {JwtService} from "./jwt-service";
+import {AuthQueryRepository} from "../infrastructure/repositories/query-repositories/auth-query-repository";
 export const users = [] as UserViewModel[]
 
 @injectable()
 export class AuthService {
     constructor(
          @inject(AuthRepository) protected authRepository: AuthRepository,
+         @inject(AuthQueryRepository) protected authQueryRepository: AuthQueryRepository,
          @inject(JwtService) protected jwtService: JwtService,
          @inject(SecurityDevicesService) protected securityDevicesService: SecurityDevicesService
     ) {}
@@ -41,7 +42,7 @@ export class AuthService {
     }
     async confirmRegistration(confirmationCode:string):Promise<boolean>{
 
-        const userAccount: UserDBModel | null = await authQueryRepository.findUserByEmailConfirmationCode(confirmationCode);
+        const userAccount: UserDBModel | null = await this.authQueryRepository.findUserByEmailConfirmationCode(confirmationCode)
 
         if (!userAccount) return false;
 
@@ -59,10 +60,10 @@ export class AuthService {
         return await bcrypt.hash(password, salt);
     }
     async resendEmail(email: string): Promise<boolean> {
-        const userAccount: UserDBModel | null = await authQueryRepository.findByLoginOrEmail(email);
+        const userAccount = await this.authQueryRepository.findByLoginOrEmail(email);
 
         if (!userAccount || !userAccount.emailConfirmation.confirmationCode) {
-            return false;
+            return false
         }
 
         const newConfirmationCode:string = randomUUID();
