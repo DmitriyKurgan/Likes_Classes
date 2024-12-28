@@ -1,6 +1,8 @@
 import {body} from 'express-validator';
-import {authQueryRepository} from "../infrastructure/repositories/query-repositories/auth-query-repository";
+import {container} from "../composition-root";
+import {AuthQueryRepository} from "../infrastructure/repositories/query-repositories/auth-query-repository";
 
+const authQueryRepository = container.resolve(AuthQueryRepository)
 
 const emailpattern =
     /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;

@@ -1,5 +1,11 @@
+import {container} from "../../../composition-root";
+
 import {param} from "express-validator";
-import {blogsQueryRepository} from "../../../infrastructure/repositories/query-repositories/blogs-query-repository";
+import {
+    BlogsQueryRepository,
+} from "../../../infrastructure/repositories/query-repositories/blogs-query-repository";
+
+const blogsQueryRepository = container.resolve(BlogsQueryRepository)
 
 export const validationBlogsFindByParamId = param("id").custom(
     async (value) => {
